@@ -2,616 +2,797 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Property Field Sheet</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Property Pipeline · Field Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --surface-2: #f4f4f3;
+    --border: #e7e5e2;
+    --border-strong: #d4d2cd;
+    --ink: #0a0a0a;
+    --ink-2: #2a2a28;
+    --muted: #6b6862;
+    --muted-2: #9a978f;
+    --accent: #ff5630;
+    --accent-soft: #fff0eb;
+    --money: #00a86b;
+    --money-soft: #e7f7f0;
+    --warn: #d97706;
+    --warn-soft: #fef3c7;
+    --danger: #dc2626;
+    --danger-soft: #fee2e2;
+    --status-progress: #00a86b;
+    --status-soon: #2563eb;
+    --status-watch: #6b6862;
+    --shadow-sm: 0 1px 2px rgba(10,10,10,0.04);
+    --shadow-md: 0 1px 3px rgba(10,10,10,0.06), 0 4px 12px rgba(10,10,10,0.04);
+    --shadow-lg: 0 4px 16px rgba(10,10,10,0.06), 0 12px 40px rgba(10,10,10,0.06);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #111; color: #fff; min-height: 100vh; }
 
-  /* TOP NAV */
-  .nav { background: #000; padding: 14px 16px 0; position: sticky; top: 0; z-index: 99; }
-  .nav h1 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; padding-bottom: 10px; }
-  .nav h1 span { color: #f59e0b; }
-  .tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-bottom: 0; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 8px 8px 0 0; background: #1a1a1a; color: #666; cursor: pointer; white-space: nowrap; border: 1px solid #222; border-bottom: none; }
-  .tab.active { background: #1e293b; color: #fff; border-color: #334155; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    letter-spacing: -0.005em;
+  }
 
-  /* PAGE */
-  .page { display: none; padding: 14px; max-width: 500px; margin: 0 auto; }
+  ::selection { background: var(--accent); color: #fff; }
+
+  .app { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 14px; letter-spacing: -0.01em;
+  }
+  .brand-mark {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .brand-mark::after {
+    content: '';
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+  .topbar-meta {
+    display: flex; align-items: center; gap: 18px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+  .live-dot {
+    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--money); margin-right: 5px;
+    animation: pulse 2s infinite;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 28px;
+  }
+  .header-eyebrow {
+    font-family: 'Geist Mono', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: 'Instrument Serif', serif; font-weight: 400;
+    font-size: clamp(36px, 6vw, 64px); line-height: 1.0;
+    letter-spacing: -0.03em; margin-bottom: 14px;
+  }
+  .header h1 em { color: var(--accent); font-style: italic; }
+  .header-sub { font-size: 15px; color: var(--muted); max-width: 560px; line-height: 1.6; }
+
+  /* STAT STRIP */
+  .stat-strip {
+    display: flex; border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin-bottom: 28px; background: var(--surface);
+  }
+  .stat-cell { flex: 1; padding: 16px 20px; border-right: 1px solid var(--border); }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .l {
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px;
+  }
+  .stat-cell .v {
+    font-family: 'Instrument Serif', serif; font-size: 28px;
+    font-weight: 400; letter-spacing: -0.02em; line-height: 1;
+  }
+  .stat-cell .v.money { color: var(--money); }
+
+  /* TABS */
+  .tabs-wrap {
+    position: sticky; top: 0; background: var(--bg);
+    padding: 12px 0; z-index: 10;
+    border-bottom: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .tabs { display: flex; gap: 4px; overflow-x: auto; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 100px;
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: 1px solid transparent; background: transparent; color: var(--muted);
+    white-space: nowrap; transition: all 0.15s ease;
+  }
+  .tab:hover { color: var(--ink); background: var(--surface-2); }
+  .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tab-count {
+    background: rgba(255,255,255,0.2); padding: 1px 7px;
+    border-radius: 100px; font-size: 11px;
+  }
+  .tab:not(.active) .tab-count { background: var(--surface-2); color: var(--muted); }
+  .tab-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .tab-status-dot.progress { background: var(--status-progress); }
+  .tab-status-dot.soon { background: var(--status-soon); }
+  .tab-status-dot.watch { background: var(--status-watch); }
+
+  /* PAGES */
+  .page { display: none; }
   .page.active { display: block; }
 
-  /* PROPERTY CARD */
-  .prop-card { background: #1e293b; border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+  /* LIST INTRO */
+  .list-intro {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .list-intro h2 {
+    font-family: 'Instrument Serif', serif; font-weight: 400;
+    font-size: 32px; letter-spacing: -0.02em; margin-bottom: 4px;
+  }
+  .list-intro p { font-size: 14px; color: var(--muted); max-width: 480px; }
+  .list-intro-count {
+    font-family: 'Instrument Serif', serif; font-size: 48px;
+    color: var(--muted-2); letter-spacing: -0.03em; line-height: 1; flex-shrink: 0;
+  }
 
-  /* STREET VIEW IMAGE AREA */
-  .street-view { background: #0f172a; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; }
-  .street-view img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .street-view-placeholder { text-align: center; }
-  .street-view-placeholder p { font-size: 12px; color: #475569; margin-bottom: 8px; }
-  .sv-btn { display: inline-block; background: #1d4ed8; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; }
-  .score-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; }
-  .score-hot { color: #f59e0b; }
-  .score-good { color: #60a5fa; }
+  /* CARDS */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; cursor: pointer;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    text-decoration: none; color: inherit; display: block;
+  }
+  .card:hover { box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+  .card-photo {
+    height: 160px; background: var(--surface-2); position: relative;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .card-photo-empty {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    color: var(--muted-2); font-size: 12px;
+  }
+  .card-photo-empty svg { width: 28px; height: 28px; }
+  .card-photo-tag {
+    position: absolute; top: 10px; right: 10px;
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 600; backdrop-filter: blur(8px);
+  }
+  .card-photo-tag.progress { background: var(--money-soft); color: var(--status-progress); }
+  .card-photo-tag.soon { background: rgba(37,99,235,0.1); color: var(--status-soon); }
+  .card-photo-tag.watch { background: var(--surface-2); color: var(--muted); }
+  .card-photo-count {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(10,10,10,0.6); color: #fff;
+    padding: 3px 8px; border-radius: 100px;
+    font-size: 11px; font-weight: 500; z-index: 2;
+  }
+  .card-body { padding: 16px; }
+  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .card-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .card-locale { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .card-score {
+    font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600;
+    background: var(--surface-2); padding: 3px 8px; border-radius: 6px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .card-specs { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .card-money {
+    padding-top: 10px; border-top: 1px solid var(--border);
+    display: flex; align-items: baseline; justify-content: space-between;
+  }
+  .card-spread { font-size: 18px; font-weight: 700; color: var(--money); letter-spacing: -0.015em; }
+  .card-ask { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
 
-  /* CARD BODY */
-  .card-body { padding: 14px; }
-  .address { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .sub { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+  /* MAPS LINK — address that opens Google Maps directions */
+  .maps-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    color: inherit; text-decoration: none;
+    border-bottom: 1px dashed var(--border-strong);
+    transition: border-color 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .maps-link:hover { color: var(--accent); border-color: var(--accent); }
+  .maps-link svg { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.5; }
+  .maps-link:hover svg { opacity: 1; }
 
-  /* PROFIT BLOCK */
-  .profit-block { background: #052e16; border: 1px solid #166534; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
-  .profit-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; margin-bottom: 2px; }
-  .profit-num { font-size: 28px; font-weight: 900; color: #22c55e; letter-spacing: -1px; }
-  .profit-note { font-size: 11px; color: #4ade80; margin-top: 2px; }
+  .empty-state {
+    text-align: center; padding: 72px 24px;
+    border: 1px dashed var(--border-strong); border-radius: var(--radius); background: var(--surface);
+  }
+  .empty-state svg { width: 36px; height: 36px; color: var(--muted-2); margin: 0 auto 12px; display: block; }
+  .empty-state h3 {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-weight: 400; font-size: 22px; margin-bottom: 4px;
+  }
+  .empty-state p { font-size: 13px; color: var(--muted); }
 
-  /* STATS GRID */
-  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
-  .stat { background: #0f172a; border-radius: 8px; padding: 8px; }
-  .stat-l { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #475569; margin-bottom: 3px; }
-  .stat-v { font-size: 13px; font-weight: 700; }
-  .stat-v.ok { color: #4ade80; }
-  .stat-v.warn { color: #fb923c; }
-  .stat-v.danger { color: #f87171; }
+  /* PROPERTY DETAIL */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted);
+    margin-bottom: 24px; cursor: pointer; border: none; background: none; padding: 0;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--ink); }
+  .back-link svg { width: 14px; height: 14px; }
 
-  /* COMP ROW */
-  .comp-row { display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
-  .comp-left { font-size: 11px; color: #64748b; }
-  .comp-right { font-size: 14px; font-weight: 800; color: #22c55e; }
+  .prop { display: grid; grid-template-columns: 1fr; gap: 32px; }
+  @media (min-width: 940px) { .prop { grid-template-columns: 1.15fr 1fr; gap: 48px; } }
 
-  /* WARNING */
-  .warn-box { background: #431407; border: 1px solid #ea580c; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; color: #fdba74; line-height: 1.5; }
-  .warn-box strong { color: #fb923c; display: block; margin-bottom: 3px; }
+  .prop-header { grid-column: 1 / -1; margin-bottom: 8px; }
+  .prop-status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 5px 11px; border-radius: 100px;
+    font-size: 12px; font-weight: 600; letter-spacing: -0.005em;
+  }
+  .status-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-pill.progress { background: var(--money-soft); color: var(--status-progress); }
+  .status-pill.progress .pill-dot { background: var(--status-progress); animation: pulse 2s infinite; }
+  .status-pill.soon { background: rgba(37,99,235,0.08); color: var(--status-soon); }
+  .status-pill.soon .pill-dot { background: var(--status-soon); }
+  .status-pill.watch { background: var(--surface-2); color: var(--muted); }
+  .status-pill.watch .pill-dot { background: var(--status-watch); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-  /* BUTTONS */
-  .btn-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; }
-  .btn-blue { background: #1d4ed8; color: #fff; }
-  .btn-dark { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
-  .btn-red { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+  .prop-tag {
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 500; background: var(--surface-2); color: var(--muted);
+  }
+  .prop-tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .prop-tag.danger { background: var(--danger-soft); color: var(--danger); }
+  .prop-tag.accent { background: var(--accent-soft); color: var(--accent); }
 
-  /* CHECKLIST */
-  .checks { background: #0f172a; border-radius: 10px; padding: 12px; }
-  .checks h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #475569; margin-bottom: 10px; }
-  .check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
-  .box { width: 20px; height: 20px; border: 2px solid #334155; border-radius: 5px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .box.checked { background: #22c55e; border-color: #22c55e; }
-  .check-txt { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
+  .prop-header h2 {
+    font-family: 'Instrument Serif', serif; font-weight: 400;
+    font-size: clamp(32px, 5vw, 48px); line-height: 1.05;
+    letter-spacing: -0.025em; margin-bottom: 8px;
+  }
+  .prop-locale { font-size: 15px; color: var(--muted); }
 
-  /* OVERVIEW */
-  .overview-row { display: flex; align-items: center; background: #1e293b; border-radius: 12px; padding: 12px; margin-bottom: 8px; gap: 12px; text-decoration: none; cursor: pointer; }
-  .rank { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; }
-  .r1 { background: #78350f; color: #fbbf24; }
-  .r2 { background: #1e3a5f; color: #60a5fa; }
-  .r3 { background: #1e3a5f; color: #60a5fa; }
-  .r4 { background: #1f2937; color: #9ca3af; }
-  .r5 { background: #1f2937; color: #9ca3af; }
-  .r6 { background: #1f2937; color: #9ca3af; }
-  .ov-info { flex: 1; }
-  .ov-name { font-size: 14px; font-weight: 700; }
-  .ov-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
-  .ov-profit { text-align: right; }
-  .ov-p { font-size: 14px; font-weight: 800; color: #22c55e; }
-  .ov-ask { font-size: 11px; color: #475569; }
+  /* DRIVE NOTES */
+  .notes-pad {
+    margin-top: 32px; padding: 24px 24px 8px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .notes-pad-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+    gap: 12px; flex-wrap: wrap;
+  }
+  .notes-pad-head h3 {
+    font-family: 'Instrument Serif', serif; font-weight: 400;
+    font-size: 22px; letter-spacing: -0.01em;
+  }
+  .notes-pad-head .notes-meta { font-size: 12px; color: var(--muted); }
+  .notes-pad-actions { display: flex; gap: 8px; }
+  .notes-btn {
+    padding: 6px 12px; background: transparent;
+    border: 1px solid var(--border); border-radius: 100px;
+    font-family: inherit; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.15s;
+  }
+  .notes-btn:hover { color: var(--ink); border-color: var(--border-strong); }
+  .notes-row {
+    display: grid; grid-template-columns: 36px 1fr; gap: 14px;
+    align-items: center; padding: 10px 0;
+    border-bottom: 1px dashed var(--border); min-height: 44px;
+  }
+  .notes-row:last-child { border-bottom: none; }
+  .notes-num {
+    font-family: 'Instrument Serif', serif; font-size: 22px;
+    color: var(--muted); text-align: center; line-height: 1;
+  }
+  .notes-input {
+    width: 100%; border: none; background: transparent;
+    font-family: inherit; font-size: 15px; color: var(--ink);
+    padding: 6px 4px; outline: none;
+  }
+  .notes-input::placeholder { color: var(--border-strong); font-style: italic; }
+  .notes-input:focus { background: var(--surface-2); border-radius: 4px; }
 
-  /* LIEN PAGE */
-  .lien-card { background: #1e293b; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-  .lien-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
-  .lien-prop { display: flex; flex-direction: column; gap: 4px; background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
-  .lien-prop-name { font-size: 13px; font-weight: 700; }
-  .lien-search-term { font-size: 11px; color: #94a3b8; font-family: monospace; }
-  .step { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
-  .step-n { width: 24px; height: 24px; background: #dc2626; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
-  .step-t { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
-  .result-key { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+  @media print {
+    .notes-pad { break-inside: avoid; }
+    .notes-pad-actions { display: none; }
+    .notes-input { border-bottom: 1px solid #000; }
+  }
 
-  /* LIEN STATUS WIDGET */
-  .lien-status { display: flex; gap: 6px; margin-bottom: 12px; }
-  .ls-btn { flex: 1; padding: 10px 6px; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
-  .ls-btn.not-checked { background: #1e293b; border-color: #334155; color: #64748b; }
-  .ls-btn.ls-clean { background: #052e16; border-color: #166534; color: #4ade80; }
-  .ls-btn.ls-issue { background: #450a0a; border-color: #991b1b; color: #fca5a5; }
-  .ls-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #475569; margin-bottom: 6px; }
+  /* CAROUSEL */
+  .photo-col { display: flex; flex-direction: column; }
+  .carousel {
+    position: relative; border-radius: var(--radius);
+    overflow: hidden; background: var(--surface-2); margin-bottom: 12px; aspect-ratio: 4/3;
+  }
+  .carousel-track {
+    display: flex; height: 100%;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+  }
+  .carousel-track::-webkit-scrollbar { display: none; }
+  .carousel-slide {
+    min-width: 100%; height: 100%; scroll-snap-align: start;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; color: var(--muted-2); font-size: 12px; position: relative; background: var(--surface-2);
+  }
+  .carousel-slide.empty svg { width: 36px; height: 36px; margin-bottom: 4px; }
+  .carousel-slide-label {
+    position: absolute; bottom: 10px; left: 12px;
+    font-family: 'Geist Mono', monospace; font-size: 10px;
+    background: rgba(10,10,10,0.5); color: #fff; padding: 3px 8px; border-radius: 4px;
+  }
+  .carousel-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 3; transition: background 0.15s;
+  }
+  .carousel-arrow:disabled { opacity: 0.3; cursor: default; }
+  .carousel-arrow.prev { left: 10px; }
+  .carousel-arrow.next { right: 10px; }
+  .carousel-arrow svg { width: 16px; height: 16px; }
+  .carousel-counter {
+    position: absolute; bottom: 10px; right: 12px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500;
+    background: rgba(10,10,10,0.5); color: #fff; padding: 3px 8px; border-radius: 4px; z-index: 2;
+  }
+  .carousel-score {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(255,255,255,0.95); padding: 5px 10px;
+    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
+    border-radius: 6px; z-index: 2;
+  }
+  .carousel-score.hot { background: var(--accent); color: #fff; }
+  .carousel-dots { display: flex; gap: 5px; justify-content: center; margin-bottom: 14px; }
+  .carousel-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border-strong); cursor: pointer; transition: all 0.2s; border: none; padding: 0;
+  }
+  .carousel-dot.active { background: var(--ink); width: 22px; border-radius: 4px; }
+  .photo-caption {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.5;
+  }
+  .photo-add-note {
+    display: flex; gap: 10px; align-items: center;
+    padding: 10px 14px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
+  }
+  .photo-add-note strong { color: var(--ink); font-weight: 600; }
+
+  /* DATA COLUMN */
+  .data-col { display: flex; flex-direction: column; gap: 24px; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .panel-head h4 { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
+  .panel-head .panel-sub { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 13px; color: var(--muted); }
+
+  .price-row { display: flex; align-items: baseline; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .price-row:last-of-type { border-bottom: none; }
+  .price-label { font-size: 13px; color: var(--muted); }
+  .price-val { font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 500; }
+  .price-row.feature { margin-top: 8px; padding: 14px 16px; background: var(--money-soft); border-radius: var(--radius-sm); border-bottom: none; }
+  .price-row.feature .price-label { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .price-row.feature .price-val { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; color: var(--money); letter-spacing: -0.02em; }
+  .price-note { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 14px; line-height: 1.5; color: var(--ink-2); margin-top: 12px; padding: 10px 14px; background: var(--surface-2); border-radius: var(--radius-sm); border-left: 2px solid var(--accent); }
+
+  .specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .spec { background: var(--surface); padding: 12px 14px; }
+  .spec-l { font-family: 'Geist Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+  .spec-v { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .spec-v .ok { color: var(--money); }
+  .spec-v .warn { color: var(--warn); }
+  .spec-v .danger { color: var(--danger); }
+  .spec-v .small { font-size: 12px; font-weight: 500; }
+
+  .comps-table { width: 100%; border-collapse: collapse; }
+  .comps-table th, .comps-table td { text-align: left; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .comps-table tr:last-child td { border-bottom: none; }
+  .comps-table th { font-family: 'Geist Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 500; }
+  .comps-table td { font-size: 13px; color: var(--ink-2); }
+  .comps-table td.num { font-family: 'Geist Mono', monospace; text-align: right; font-weight: 500; color: var(--ink); }
+  .comps-table td.range { font-family: 'Instrument Serif', serif; font-size: 18px; font-weight: 400; color: var(--money); text-align: right; letter-spacing: -0.01em; }
+
+  .lien-status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+  .ls-btn { padding: 11px 8px; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-sm); font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.15s ease; text-align: center; }
+  .ls-btn:hover { color: var(--ink); border-color: var(--border-strong); }
+  .ls-btn.active.unchecked { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .ls-btn.active.clean { background: var(--money); color: #fff; border-color: var(--money); }
+  .ls-btn.active.issue { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .lien-search-link { display: block; padding: 10px 14px; background: var(--surface-2); border-radius: var(--radius-sm); font-family: 'Geist Mono', monospace; font-size: 12px; text-decoration: none; color: var(--ink); text-align: center; transition: all 0.15s; }
+  .lien-search-link:hover { background: var(--ink); color: #fff; }
+  .lien-search-link strong { color: var(--accent); }
+  .lien-search-link:hover strong { color: var(--accent-soft); }
+
+  .warning { padding: 14px 16px; background: var(--warn-soft); border-radius: var(--radius-sm); border-left: 3px solid var(--warn); }
+  .warning.danger { background: var(--danger-soft); border-left-color: var(--danger); }
+  .warning h5 { font-size: 12px; font-weight: 600; color: var(--warn); margin-bottom: 4px; }
+  .warning.danger h5 { color: var(--danger); }
+  .warning p { font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+  .warning b { color: var(--ink); font-weight: 600; }
+
+  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 600px) { .actions { grid-template-columns: 1fr; } }
+  .action { padding: 12px 16px; border-radius: var(--radius-sm); text-decoration: none; font-size: 13px; font-weight: 500; text-align: center; transition: all 0.15s ease; border: 1px solid transparent; }
+  .action.primary { background: var(--ink); color: #fff; }
+  .action.primary:hover { background: var(--accent); }
+  .action.secondary { background: var(--surface); color: var(--ink); border-color: var(--border); }
+  .action.secondary:hover { border-color: var(--ink); }
+  .action.danger { background: var(--surface); color: var(--danger); border-color: var(--danger-soft); }
+  .action.danger:hover { background: var(--danger); color: #fff; }
+
+  .check { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  .check:last-child { border-bottom: none; }
+  .check-box { width: 18px; height: 18px; border: 1.5px solid var(--border-strong); border-radius: 5px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; }
+  .check.done .check-box { background: var(--money); border-color: var(--money); }
+  .check.done .check-box::after { content: ''; width: 5px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg) translate(-1px, -1px); }
+  .check-txt { font-size: 14px; line-height: 1.45; color: var(--ink-2); }
+  .check.done .check-txt { color: var(--muted); text-decoration: line-through; }
+
+  /* LIEN PROTOCOL PAGE */
+  .liens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 32px; }
+  .lien-card { padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .lien-card h5 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .lien-card .search-term { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 5px 9px; border-radius: 4px; display: inline-block; margin-top: 6px; }
+  .lien-howto { background: var(--surface); border: 1px solid var(--border); padding: 28px; border-radius: var(--radius); margin-bottom: 20px; }
+  .lien-howto h4 { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 24px; margin-bottom: 18px; letter-spacing: -0.02em; }
+  .lien-step { display: grid; grid-template-columns: 28px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .lien-step:last-of-type { border-bottom: none; }
+  .lien-step-n { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--accent); line-height: 1; }
+  .lien-step p { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+  .lien-step b { color: var(--ink); font-weight: 600; }
+  .lien-key { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
+  .key-item { padding: 12px 14px; border-radius: var(--radius-sm); display: flex; gap: 10px; align-items: flex-start; }
+  .key-item .dot-color { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .key-clean { background: var(--money-soft); }
+  .key-clean .dot-color { background: var(--money); }
+  .key-yellow { background: var(--warn-soft); }
+  .key-yellow .dot-color { background: var(--warn); }
+  .key-red { background: var(--danger-soft); }
+  .key-red .dot-color { background: var(--danger); }
+  .key-item p { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+  .key-item b { color: var(--ink); font-weight: 600; }
+  .other-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+
+  footer { border-top: 1px solid var(--border); margin-top: 48px; padding: 24px 0 32px; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <h1>🏠 Field Sheet — <span>Sweep 1</span></h1>
-  <div class="tabs">
-    <div class="tab active" onclick="show('overview', this)">All</div>
-    <div class="tab" onclick="show('p1', this)">① Alhambra</div>
-    <div class="tab" onclick="show('p2', this)">② Unity</div>
-    <div class="tab" onclick="show('p3', this)">③ Hawks</div>
-    <div class="tab" onclick="show('p4', this)">④ Alsobrook</div>
-    <div class="tab" onclick="show('p5', this)">⑤ Trapnell</div>
-    <div class="tab" onclick="show('p6', this)">⑥ Bel Air</div>
-    <div class="tab" onclick="show('liens', this)">⚠️ Liens</div>
-  </div>
-</div>
+<div class="app">
 
-<!-- OVERVIEW -->
-<div id="page-overview" class="page active">
-  <div style="padding: 4px 0 10px; font-size: 11px; color: #475569; text-align: center;">Tap a property to open it</div>
-
-  <div class="overview-row" onclick="show('p1', document.querySelectorAll('.tab')[1])">
-    <div class="rank r1">1</div>
-    <div class="ov-info">
-      <div class="ov-name">Alhambra Crest Dr — Ruskin</div>
-      <div class="ov-sub">4/3 · 2,440 sqft · Built 2008 · Score 27/30 🔥</div>
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <span>Pipeline · Field Sheet</span>
     </div>
-    <div class="ov-profit"><div class="ov-p">$100k–$180k</div><div class="ov-ask">Ask $147,100</div></div>
-  </div>
-
-  <div class="overview-row" onclick="show('p2', document.querySelectorAll('.tab')[2])">
-    <div class="rank r2">2</div>
-    <div class="ov-info">
-      <div class="ov-name">Unity Village Dr — Ruskin</div>
-      <div class="ov-sub">3/2 · ~1,470 sqft · Built 2006 · Score 23/30</div>
-    </div>
-    <div class="ov-profit"><div class="ov-p">$95k–$110k</div><div class="ov-ask">Ask $139,900</div></div>
-  </div>
-
-  <div class="overview-row" onclick="show('p3', document.querySelectorAll('.tab')[3])">
-    <div class="rank r3">3</div>
-    <div class="ov-info">
-      <div class="ov-name">Hawks Island/View Dr — Ruskin</div>
-      <div class="ov-sub">3/2 · Score 23/30</div>
-    </div>
-    <div class="ov-profit"><div class="ov-p">$90k–$110k</div><div class="ov-ask">Ask $140,600</div></div>
-  </div>
-
-  <div class="overview-row" onclick="show('p4', document.querySelectorAll('.tab')[4])">
-    <div class="rank r4">4</div>
-    <div class="ov-info">
-      <div class="ov-name">W Alsobrook St — Plant City</div>
-      <div class="ov-sub">3/1 · Score 23/30 · ⚠️ Flood check</div>
-    </div>
-    <div class="ov-profit"><div class="ov-p">$70k–$100k</div><div class="ov-ask">Ask $135,000</div></div>
-  </div>
-
-  <div class="overview-row" onclick="show('p5', document.querySelectorAll('.tab')[5])">
-    <div class="rank r5">5</div>
-    <div class="ov-info">
-      <div class="ov-name">E Trapnell Rd — Plant City</div>
-      <div class="ov-sub">2/1 · Rural · Score 22/30 · ⚠️ Flood check</div>
-    </div>
-    <div class="ov-profit"><div class="ov-p">$30k–$65k</div><div class="ov-ask">Ask $126,000</div></div>
-  </div>
-
-  <div class="overview-row" onclick="show('p6', document.querySelectorAll('.tab')[6])">
-    <div class="rank r6">6</div>
-    <div class="ov-info">
-      <div class="ov-name">Bel Air Ave — Sun City Center</div>
-      <div class="ov-sub">2/2 · 1,344 sqft · 55+ community · Score 21/30</div>
-    </div>
-    <div class="ov-profit"><div class="ov-p">$50k–$65k</div><div class="ov-ask">Ask $159,000</div></div>
-  </div>
-
-  <div style="background:#1e293b;border-radius:12px;padding:14px;margin-top:4px;">
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#475569;margin-bottom:8px;">Drive Order</div>
-    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
-      <strong style="color:#f59e0b;">Ruskin (do all 3 together):</strong> Alhambra → Unity Village → Hawks View/Island — all within 10 min of each other.<br>
-      <strong style="color:#60a5fa;">Plant City:</strong> Alsobrook → Trapnell (check Street View on Trapnell first).<br>
-      <strong style="color:#94a3b8;">Sun City Center:</strong> Optional — only if other trips go well.
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 1 -->
-<div id="page-p1" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge score-hot">27/30 🔥 BUY</div>
-      <div class="street-view-placeholder">
-        <p>Street View</p>
-        <a href="https://www.google.com/maps/@27.7176,-82.4032,3a,75y,90t/data=!3m1!1e3" class="sv-btn" target="_blank">📷 Open Street View</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">1201 Alhambra Crest Dr</div>
-      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$100k – $180k</div>
-        <div class="profit-note">Comps $303k–$369k on same street · even $50k rehab leaves $100k+</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$147,100</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">4 / 3</div></div>
-        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">~2,440</div></div>
-        <div class="stat"><div class="stat-l">Built</div><div class="stat-v ok">2008 ✓</div></div>
-        <div class="stat"><div class="stat-l">Type</div><div class="stat-v ok">SFH ✓</div></div>
-        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v warn">Verify</div></div>
-      </div>
-
-      <div class="comp-row">
-        <div class="comp-left">Comps on same street (2024–25)</div>
-        <div class="comp-right">$303k – $369k</div>
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=1201+Alhambra+Crest+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
-        <a href="https://www.google.com/maps/@27.7176,-82.4032,3a,75y,90t/data=!3m1!1e3" class="btn btn-dark" target="_blank">📷 Street View</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>On Site — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Real house — not mobile/manufactured?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Roof condition — missing shingles, sagging?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Foundation — cracks, water stains at base?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Windows intact or boarded?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighboring homes well-kept?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Bank notice / lockbox present?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph front + both sides</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 2 -->
-<div id="page-p2" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge score-good">23/30 BUY</div>
-      <div class="street-view-placeholder">
-        <p>Street View — check 2120 AND 2206</p>
-        <a href="https://www.google.com/maps/@27.7230,-82.4010,3a,75y,90t/data=!3m1!1e3" class="sv-btn" target="_blank">📷 Open Street View</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">2120 or 2206 Unity Village Dr</div>
-      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$95k – $110k</div>
-        <div class="profit-note">3/2 built 2006 · comps $250k–$297k · light cosmetic flip</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$139,900</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 2</div></div>
-        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">~1,470</div></div>
-        <div class="stat"><div class="stat-l">Built</div><div class="stat-v ok">2006 ✓</div></div>
-        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v ok">Zone X</div></div>
-        <div class="stat"><div class="stat-l">HOA</div><div class="stat-v warn">Verify</div></div>
-      </div>
-
-      <div class="comp-row">
-        <div class="comp-left">Unity Village Dr comps</div>
-        <div class="comp-right">$250k – $297k</div>
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=2120+Unity+Village+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate → 2120</a>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=2206+Unity+Village+Dr+Ruskin+FL+33570" class="btn btn-dark" target="_blank">📍 Also check → 2206</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>On Site — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Which house (2120 or 2206) has bank notice?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Exterior condition — paint, fascia, gutters</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">HVAC unit outside — looks recent?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Any water staining on exterior walls</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighborhood well maintained?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph both addresses</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 3 -->
-<div id="page-p3" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge score-good">23/30 BUY</div>
-      <div class="street-view-placeholder">
-        <p>Verify: Hawks View Dr OR Hawks Island Dr?</p>
-        <a href="https://www.google.com/maps/search/Hawks+View+Dr+Ruskin+FL+33570" class="sv-btn" target="_blank">🗺️ Find the Street</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">Hawks Island Dr / Hawks View Dr</div>
-      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$90k – $110k</div>
-        <div class="profit-note">3/2 in Ruskin · comps $260k–$355k</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$140,600</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 2</div></div>
-        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v ok">Zone X</div></div>
-        <div class="stat"><div class="stat-l">Street?</div><div class="stat-v warn">Verify</div></div>
-      </div>
-
-      <div class="warn-box">
-        <strong>⚠️ Confirm Street Name</strong>
-        Listing says "Hawks Island Dr" — the confirmed foreclosure in this area is on "Hawks View Dr." Check both on Google Maps when you arrive. One of them has the property.
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+View+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate → Hawks View Dr</a>
-        <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+Island+Dr+Ruskin+FL+33570" class="btn btn-dark" target="_blank">📍 Also try → Hawks Island Dr</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>On Site — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Confirm actual street name</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find the house with foreclosure notice</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Roof, exterior, foundation</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Subdivision or isolated street?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 4 -->
-<div id="page-p4" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge score-good">23/30</div>
-      <div class="street-view-placeholder">
-        <p>W Alsobrook St, Plant City</p>
-        <a href="https://www.google.com/maps/search/W+Alsobrook+St+Plant+City+FL+33563" class="sv-btn" target="_blank">📷 Street View</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">W Alsobrook St</div>
-      <div class="sub">Plant City, FL 33563 · Bank-Owned Foreclosure</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$70k – $100k</div>
-        <div class="profit-note">Add 2nd bath → $240k+ ARV · Plant City median $335k</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$135,000</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 1</div></div>
-        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v danger">⚠️ Check</div></div>
-        <div class="stat"><div class="stat-l">HOA</div><div class="stat-v ok">Likely None</div></div>
-      </div>
-
-      <div class="warn-box">
-        <strong>⚠️ Flood Zone — Check Before Driving</strong>
-        East Alsobrook = confirmed Zone AE (mandatory flood insurance, adds $2k+/yr, harder to sell). The West side may be different. Verify at msc.fema.gov — search "W Alsobrook St, Plant City FL 33563" — before making any offer.
-      </div>
-
-      <div class="comp-row">
-        <div class="comp-left">Plant City median sold 2025</div>
-        <div class="comp-right">$335,000</div>
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=W+Alsobrook+St+Plant+City+FL+33563" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
-        <a href="https://msc.fema.gov/portal/search" class="btn btn-red" target="_blank">🌊 Check Flood Zone First</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-dark" target="_blank">⚠️ Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>On Site — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Street sits low? Water staining on home bases?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find house number with bank notice</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Estimate age of structure from outside</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Room to add 2nd bath (garage/addition)?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 5 -->
-<div id="page-p5" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge" style="color:#fbbf24;">22/30</div>
-      <div class="street-view-placeholder">
-        <p>Check Street View BEFORE driving</p>
-        <a href="https://www.google.com/maps/search/E+Trapnell+Rd+Plant+City+FL+33566" class="sv-btn" target="_blank">🌐 Street View — Trapnell Rd</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">E Trapnell Rd</div>
-      <div class="sub">Plant City, FL 33566 · Bank-Owned Foreclosure · Rural</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$30k – $65k</div>
-        <div class="profit-note">Lowest price on the list · rural location caps the ceiling</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$126,000</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">2 / 1</div></div>
-        <div class="stat"><div class="stat-l">Location</div><div class="stat-v warn">Rural</div></div>
-        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v danger">⚠️ Partial A</div></div>
-      </div>
-
-      <div class="warn-box">
-        <strong>⚠️ Street View This Before You Drive</strong>
-        Some Trapnell Rd parcels are isolated rural with no neighboring homes. If Street View shows a house surrounded by fields — skip the trip. If it shows a neighborhood pocket — go look.
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/search/E+Trapnell+Rd+Plant+City+FL+33566" class="btn btn-blue" target="_blank">🌐 Open on Google Maps First</a>
-        <a href="https://msc.fema.gov/portal/search" class="btn btn-red" target="_blank">🌊 Check Flood Zone</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-dark" target="_blank">⚠️ Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>If You Go — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighboring homes visible from road?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Any mobile homes nearby? (Skip if yes)</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Low-lying land, standing water nearby?</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Condition visible from road</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- PROPERTY 6 -->
-<div id="page-p6" class="page">
-  <div class="prop-card">
-    <div class="street-view">
-      <div class="score-badge" style="color:#94a3b8;">21/30</div>
-      <div class="street-view-placeholder">
-        <p>Bel Air Ave, Sun City Center</p>
-        <a href="https://www.google.com/maps/search/Bel+Air+Ave+Sun+City+Center+FL+33573" class="sv-btn" target="_blank">📷 Street View</a>
-      </div>
-    </div>
-    <div class="card-body">
-      <div class="address">Bel Air Ave</div>
-      <div class="sub">Sun City Center, FL 33573 · Foreclosure · 55+ Community</div>
-
-      <div class="profit-block">
-        <div class="profit-label">Estimated Profit</div>
-        <div class="profit-num">$50k – $65k</div>
-        <div class="profit-note">702 Bel Air sold $270k (Sep 2023) · light cosmetic flip</div>
-      </div>
-
-      <div class="stats">
-        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$159,000</div></div>
-        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">2 / 2</div></div>
-        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">1,344</div></div>
-        <div class="stat"><div class="stat-l">Comp</div><div class="stat-v ok">$270,000</div></div>
-        <div class="stat"><div class="stat-l">Age Rule</div><div class="stat-v warn">55+ Only</div></div>
-        <div class="stat"><div class="stat-l">Cash Buyers</div><div class="stat-v ok">Very High</div></div>
-      </div>
-
-      <div class="warn-box">
-        <strong>⚠️ 55+ Community — Buyers Must Be 55+</strong>
-        Investors can buy and sell freely. But YOUR BUYER must be 55+. Smaller buyer pool, but cash buyers are very common in Sun City Center. HOA fees: SCCA = ~$30–$50/yr (fine). Kings Point = $500+/mo (avoid). Confirm which community it's in.
-      </div>
-
-      <div class="ls-label">Lien Status</div>
-      <div class="lien-status">
-        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
-        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
-        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
-      </div>
-
-      <div class="btn-row">
-        <a href="https://www.google.com/maps/dir/?api=1&destination=Bel+Air+Ave+Sun+City+Center+FL+33573" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
-        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Lien Search</a>
-      </div>
-
-      <div class="checks">
-        <h3>On Site — Check These</h3>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find house number with bank notice</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">SCCA or Kings Point signage? (Huge HOA difference)</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Exterior condition — roof, paint, HVAC age</div></div>
-        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- LIENS PAGE -->
-<div id="page-liens" class="page">
-  <div class="lien-card">
-    <div class="lien-title" style="color:#f87171;">⚠️ Lien Search — Do This Before Any Offer</div>
-    <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:14px;">Takes 10 minutes per property. It's a free public website — just click the link below, type the search term, and read the results. No account, no phone call needed.</p>
-
-    <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank" style="margin-bottom:14px;display:flex;">🔍 Open Hillsborough Official Records</a>
-
-    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#475569;margin-bottom:8px;">Search Term for Each Property</div>
-
-    <div class="lien-prop"><div class="lien-prop-name">① Alhambra Crest Dr</div><div class="lien-search-term">Type: "Alhambra Crest"</div></div>
-    <div class="lien-prop"><div class="lien-prop-name">② Unity Village Dr</div><div class="lien-search-term">Type: "Unity Village"</div></div>
-    <div class="lien-prop"><div class="lien-prop-name">③ Hawks Island / Hawks View Dr</div><div class="lien-search-term">Type: "Hawks View" and also "Hawks Island"</div></div>
-    <div class="lien-prop"><div class="lien-prop-name">④ W Alsobrook St</div><div class="lien-search-term">Type: "Alsobrook"</div></div>
-    <div class="lien-prop"><div class="lien-prop-name">⑤ E Trapnell Rd</div><div class="lien-search-term">Type: "Trapnell"</div></div>
-    <div class="lien-prop"><div class="lien-prop-name">⑥ Bel Air Ave</div><div class="lien-search-term">Type: "Bel Air" + Sun City Center</div></div>
-  </div>
-
-  <div class="lien-card">
-    <div class="lien-title">What to Look For</div>
-    <div class="step"><div class="step-n">1</div><div class="step-t">Look for document types: <strong>Lis Pendens, Final Judgment, Claim of Lien, IRS Lien, Code Enforcement</strong></div></div>
-    <div class="step"><div class="step-n">2</div><div class="step-t">Check dates — look at records from the <strong>last 10 years</strong></div></div>
-    <div class="step"><div class="step-n">3</div><div class="step-t">If you see a lien, look for a matching <strong>Release of Lien or Satisfaction</strong> — that means it was paid off</div></div>
-    <div class="step"><div class="step-n">4</div><div class="step-t">Open lien with no release = call a title company before you do anything else</div></div>
-
-    <div style="margin-top:10px;">
-      <div class="result-key">🟢 <span>No open liens → clean, proceed with confidence</span></div>
-      <div class="result-key">🟡 <span>Small HOA or code lien → negotiable at closing</span></div>
-      <div class="result-key">🔴 <span>Large judgment or IRS lien → title company call before any offer</span></div>
+    <div class="topbar-meta">
+      <span><span class="live-dot"></span>Live · auto-saved</span>
+      <span>v 03</span>
     </div>
   </div>
 
-  <div class="lien-card">
-    <div class="lien-title">Other Quick Checks</div>
-    <a href="https://hillstaxfl.gov" class="btn btn-dark" target="_blank" style="margin-bottom:8px;display:flex;">💰 Check Tax Status — hillstaxfl.gov</a>
-    <a href="https://msc.fema.gov/portal/search" class="btn btn-dark" target="_blank" style="margin-bottom:8px;display:flex;">🌊 FEMA Flood Zone — msc.fema.gov</a>
-    <a href="https://gis.hcpafl.org/propertysearch/" class="btn btn-dark" target="_blank" style="display:flex;">🏠 Property Appraiser — gis.hcpafl.org</a>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-eyebrow">Property Pipeline · Florida +</div>
+    <h1>Fresh sweep, ranked by <em>spread</em>.</h1>
+    <p class="header-sub">Bank-owned foreclosures, ARV-modeled, comps-supported. Tap any address to open Google Maps directions. Filter by auction status, run the lien check before any offer.</p>
+  </header>
+
+  <!-- STAT STRIP -->
+  <div class="stat-strip">
+    <div class="stat-cell"><div class="l">Properties</div><div class="v" id="stat-count">—</div></div>
+    <div class="stat-cell"><div class="l">Combined Spread</div><div class="v money" id="stat-spread">—</div></div>
+    <div class="stat-cell"><div class="l">In Progress</div><div class="v" id="stat-progress">—</div></div>
+    <div class="stat-cell"><div class="l">Watching</div><div class="v" id="stat-watch">—</div></div>
   </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <nav class="tabs">
+      <button class="tab active" onclick="show('progress', this)">
+        <span class="tab-status-dot progress"></span>
+        Auction in Progress
+        <span class="tab-count" id="count-progress">0</span>
+      </button>
+      <button class="tab" onclick="show('soon', this)">
+        <span class="tab-status-dot soon"></span>
+        Auction Soon
+        <span class="tab-count" id="count-soon">0</span>
+      </button>
+      <button class="tab" onclick="show('watch', this)">
+        <span class="tab-status-dot watch"></span>
+        Homes to Watch
+        <span class="tab-count" id="count-watch">0</span>
+      </button>
+      <button class="tab" onclick="show('liens', this)">
+        Lien Protocol
+      </button>
+    </nav>
+  </div>
+
+  <!-- AUCTION IN PROGRESS -->
+  <section id="page-progress" class="page active">
+    <div class="list-intro">
+      <div>
+        <h2>Auction in progress</h2>
+        <p>Active foreclosure listings — offer windows are open. Move fast, but verify liens before bidding.</p>
+      </div>
+      <div class="list-intro-count" id="intro-count-progress">—</div>
+    </div>
+    <div class="cards" id="cards-progress">
+      <div class="empty-state" style="grid-column:1/-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        <h3>No properties yet</h3>
+        <p>Sam will populate this tab once the sweep is complete.</p>
+      </div>
+    </div>
+    <div class="notes-pad">
+      <div class="notes-pad-head">
+        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div class="notes-pad-actions">
+          <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
+          <button class="notes-btn" onclick="window.print()">Print</button>
+        </div>
+      </div>
+      <div class="notes-rows">
+        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="First stop…"></div>
+        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder="Second stop…"></div>
+        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">4</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">5</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUCTION SOON -->
+  <section id="page-soon" class="page">
+    <div class="list-intro">
+      <div>
+        <h2>Auction soon</h2>
+        <p>Listings approaching auction. Drive them this week, finalize offers before the window opens.</p>
+      </div>
+      <div class="list-intro-count" id="intro-count-soon">—</div>
+    </div>
+    <div class="cards" id="cards-soon">
+      <div class="empty-state" style="grid-column:1/-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        <h3>No properties yet</h3>
+        <p>Sam will populate this tab once the sweep is complete.</p>
+      </div>
+    </div>
+    <div class="notes-pad">
+      <div class="notes-pad-head">
+        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div class="notes-pad-actions">
+          <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
+          <button class="notes-btn" onclick="window.print()">Print</button>
+        </div>
+      </div>
+      <div class="notes-rows">
+        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="First stop…"></div>
+        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder="Second stop…"></div>
+        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">4</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">5</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOMES TO WATCH -->
+  <section id="page-watch" class="page">
+    <div class="list-intro">
+      <div>
+        <h2>Homes to watch</h2>
+        <p>Lower priority — rural ceiling, restricted communities, or unverified data. Keep eyes on, drive only if first two tabs clear.</p>
+      </div>
+      <div class="list-intro-count" id="intro-count-watch">—</div>
+    </div>
+    <div class="cards" id="cards-watch">
+      <div class="empty-state" style="grid-column:1/-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        <h3>No properties yet</h3>
+        <p>Sam will populate this tab once the sweep is complete.</p>
+      </div>
+    </div>
+    <div class="notes-pad">
+      <div class="notes-pad-head">
+        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div class="notes-pad-actions">
+          <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
+          <button class="notes-btn" onclick="window.print()">Print</button>
+        </div>
+      </div>
+      <div class="notes-rows">
+        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="First stop…"></div>
+        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder="Second stop…"></div>
+        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">4</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">5</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIEN PROTOCOL -->
+  <section id="page-liens" class="page">
+    <div class="list-intro">
+      <div>
+        <h2>Lien protocol</h2>
+        <p>Run every property below before any offer. Free public records, ten minutes per address — catches the things that kill deals at closing.</p>
+      </div>
+      <div class="list-intro-count">Pre-Offer</div>
+    </div>
+
+    <div class="other-checks" style="margin-bottom: 28px;">
+      <a href="https://www.google.com/search?q=county+clerk+official+records+search+florida" target="_blank" class="action primary">Find county clerk records →</a>
+      <a href="https://www.google.com/search?q=property+appraiser+florida" target="_blank" class="action secondary">County Property Appraiser</a>
+      <a href="https://msc.fema.gov/portal/search" target="_blank" class="action secondary">FEMA Flood Map</a>
+    </div>
+
+    <div class="panel-head"><h4>Search Term per Property</h4></div>
+    <div class="liens-grid" id="liens-grid">
+      <div class="empty-state" style="grid-column:1/-1; padding:40px 24px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <h3>No properties yet</h3>
+        <p>Lien search terms will appear here once properties are added.</p>
+      </div>
+    </div>
+
+    <div class="lien-howto">
+      <h4>What to look for</h4>
+      <div class="lien-step"><div class="lien-step-n">1</div><p>Document types: <b>Lis Pendens, Final Judgment, Claim of Lien, IRS Lien, Code Enforcement</b>.</p></div>
+      <div class="lien-step"><div class="lien-step-n">2</div><p>Check dates — read records from the <b>last ten years</b>. Older usually doesn't matter.</p></div>
+      <div class="lien-step"><div class="lien-step-n">3</div><p>If you find a lien, look for a matching <b>Release of Lien or Satisfaction</b>. That means it was paid off.</p></div>
+      <div class="lien-step"><div class="lien-step-n">4</div><p>Open lien with no release? <b>Stop. Call a title company before doing anything else.</b></p></div>
+      <div class="lien-key">
+        <div class="key-item key-clean"><div class="dot-color"></div><p><b>No open liens</b> — clean, proceed with confidence.</p></div>
+        <div class="key-item key-yellow"><div class="dot-color"></div><p><b>Small HOA or code lien</b> — usually negotiable at closing.</p></div>
+        <div class="key-item key-red"><div class="dot-color"></div><p><b>Large judgment or IRS lien</b> — title company before any offer.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Property Pipeline · Field Sheet</span>
+    <span>Tap any address to open Google Maps · Print landscape</span>
+  </footer>
+
 </div>
 
 <script>
-function show(id, tabEl) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  if (tabEl && tabEl.classList) tabEl.classList.add('active');
-}
-function toggle(box) {
-  box.classList.toggle('checked');
-  box.innerHTML = box.classList.contains('checked') ? '✓' : '';
-}
-function setLien(btn, state) {
-  const group = btn.parentElement;
-  group.querySelectorAll('.ls-btn').forEach(b => {
-    b.style.opacity = '0.35';
-    b.style.borderColor = 'transparent';
-  });
-  btn.style.opacity = '1';
-  btn.style.borderColor = state === 'ls-clean' ? '#22c55e' : state === 'ls-issue' ? '#ef4444' : '#475569';
-}
+  /* ── Utility: build a Google Maps directions URL from an address string ── */
+  function mapsUrl(address) {
+    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
+  }
+
+  /* ── Utility: wrap an address string in a clickable Maps link ── */
+  function mapsLink(address, label) {
+    const url = mapsUrl(address);
+    return '<a class="maps-link" href="' + url + '" target="_blank" onclick="event.stopPropagation()">'
+      + (label || address)
+      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
+      + '</a>';
+  }
+
+  /* ── Page switching ── */
+  function show(id, tabEl) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    if (tabEl) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tabEl.classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCheck(el) { el.classList.toggle('done'); }
+
+  function setLien(btn) {
+    btn.parentElement.querySelectorAll('.ls-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function clearNotes(btn) {
+    btn.closest('.notes-pad').querySelectorAll('.notes-input').forEach(i => i.value = '');
+  }
+
+  /* ── Carousels ── */
+  function initCarousels() {
+    document.querySelectorAll('.carousel').forEach(carousel => {
+      const id = carousel.dataset.carousel;
+      const track = carousel.querySelector('.carousel-track');
+      const slides = carousel.querySelectorAll('.carousel-slide');
+      const prevBtn = carousel.querySelector('.carousel-arrow.prev');
+      const nextBtn = carousel.querySelector('.carousel-arrow.next');
+      const counter = carousel.querySelector('.cc-current');
+      const total = carousel.querySelector('.cc-total');
+      const dotsContainer = document.querySelector('[data-dots="' + id + '"]');
+      if (!track || !dotsContainer) return;
+      const count = slides.length;
+      if (total) total.textContent = count;
+      dotsContainer.innerHTML = '';
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+        dot.addEventListener('click', () => goTo(i));
+        dotsContainer.appendChild(dot);
+      });
+      const dots = dotsContainer.querySelectorAll('.carousel-dot');
+      let current = 0;
+      function update() {
+        if (counter) counter.textContent = current + 1;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        if (prevBtn) prevBtn.disabled = current === 0;
+        if (nextBtn) nextBtn.disabled = current === count - 1;
+      }
+      function goTo(i) {
+        current = Math.max(0, Math.min(count - 1, i));
+        track.scrollTo({ left: track.clientWidth * current, behavior: 'smooth' });
+        update();
+      }
+      if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+      if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+      let scrollTimer;
+      track.addEventListener('scroll', () => {
+        clearTimeout(scrollTimer);
+        scrollTimer = setTimeout(() => {
+          const ni = Math.round(track.scrollLeft / track.clientWidth);
+          if (ni !== current) { current = ni; update(); }
+        }, 80);
+      });
+      update();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const ap = document.querySelector('.page.active');
+      if (!ap) return;
+      const c = ap.querySelector('.carousel');
+      if (!c) return;
+      const btn = c.querySelector(e.key === 'ArrowLeft' ? '.prev' : '.next');
+      if (btn && !btn.disabled) btn.click();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCarousels);
 </script>
 </body>
 </html>
