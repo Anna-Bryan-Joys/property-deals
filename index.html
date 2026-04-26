@@ -231,6 +231,45 @@
   .card-hoa.danger { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
   .card-hoa.unknown { background: var(--surface-2); color: var(--muted); }
 
+  /* ── YAY / NAY ── */
+  .card-verdict {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+  .verdict-btn {
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 10px 8px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1.5px solid transparent; transition: all 0.15s ease;
+    background: none; font-family: 'Geist', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .verdict-btn.yay { border-color: var(--money); color: var(--money); }
+  .verdict-btn.yay:hover, .verdict-btn.yay.active { background: var(--money); color: #fff; }
+  .verdict-btn.nay { border-color: var(--border-strong); color: var(--muted); }
+  .verdict-btn.nay:hover { border-color: var(--danger); color: var(--danger); }
+  .verdict-btn.nay.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+  .card[data-verdict="nay"] {
+    opacity: 0.35; filter: grayscale(0.6);
+    transition: opacity 0.3s, filter 0.3s;
+  }
+  .card[data-verdict="yay"] { border-color: var(--money) !important; }
+
+  .passed-bar {
+    display: none; align-items: center; justify-content: space-between;
+    padding: 10px 14px; background: var(--surface-2);
+    border-radius: var(--radius-sm); margin-bottom: 16px;
+    font-size: 13px; color: var(--muted);
+  }
+  .passed-bar.visible { display: flex; }
+  .passed-bar button {
+    font-size: 12px; font-weight: 600; background: none; border: none;
+    color: var(--ink); cursor: pointer; text-decoration: underline;
+    font-family: 'Geist', sans-serif;
+  }
+
   /* MAPS LINK — address that opens Google Maps directions */
   .maps-link {
     display: inline-flex; align-items: center; gap: 5px;
@@ -553,6 +592,10 @@
         Homes to Watch
         <span class="tab-count" id="count-watch">0</span>
       </button>
+      <button class="tab" onclick="show('flight', this)">
+        ✈ Worth a Flight
+        <span class="tab-count" id="count-flight">0</span>
+      </button>
       <button class="tab" onclick="show('liens', this)">
         Lien Protocol
       </button>
@@ -567,6 +610,10 @@
         <p>Active foreclosure listings — offer windows are open. Move fast, but verify liens before bidding.</p>
       </div>
       <div class="list-intro-count" id="intro-count-progress">—</div>
+    </div>
+    <div class="passed-bar" id="passed-bar-progress">
+      <span id="passed-label-progress"></span>
+      <button onclick="togglePassed('progress')">Show passed</button>
     </div>
     <div class="cards" id="cards-progress">
 
@@ -960,6 +1007,10 @@
       </div>
       <div class="list-intro-count" id="intro-count-soon">—</div>
     </div>
+    <div class="passed-bar" id="passed-bar-soon">
+      <span id="passed-label-soon"></span>
+      <button onclick="togglePassed('soon')">Show passed</button>
+    </div>
     <div class="cards" id="cards-soon">
 
       <!-- Bradenton $100 opening bid — Xome trustee -->
@@ -1151,6 +1202,10 @@
       </div>
       <div class="list-intro-count" id="intro-count-watch">—</div>
     </div>
+    <div class="passed-bar" id="passed-bar-watch">
+      <span id="passed-label-watch"></span>
+      <button onclick="togglePassed('watch')">Show passed</button>
+    </div>
     <div class="cards" id="cards-watch">
 
       <!-- Hudson 3/2 on 4 acres — 272 DOM -->
@@ -1324,6 +1379,146 @@
     </div>
   </section>
 
+  <!-- WORTH A FLIGHT -->
+  <section id="page-flight" class="page">
+    <div class="list-intro">
+      <div>
+        <h2>Worth a flight</h2>
+        <p>Markets within 1–2 hours of Tampa where the spread beats local deals. A $300 round-trip is nothing if the margin is $50k better.</p>
+      </div>
+      <div class="list-intro-count" id="intro-count-flight">—</div>
+    </div>
+    <div class="passed-bar" id="passed-bar-flight">
+      <span id="passed-label-flight"></span>
+      <button onclick="togglePassed('flight')">Show passed</button>
+    </div>
+    <div class="cards" id="cards-flight">
+
+      <!-- Birmingham AL -->
+      <a class="card" href="https://www.zillow.com/homes/foreclosures/Birmingham-AL_rb/" target="_blank">
+        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <span style="color:#fff;font-size:22px">✈</span>
+          <span style="color:#fff;font-size:13px;font-weight:600">1.5 hr from Tampa</span>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Birmingham, AL</div>
+              <div class="card-locale">Jefferson County · 1.5 hr flight</div>
+            </div>
+            <span class="card-score">Market</span>
+          </div>
+          <div class="card-specs"><span>SFH foreclosures</span><span>Often $55–90k</span></div>
+          <div class="card-money">
+            <div class="card-spread">$60–100k spreads common</div>
+            <div class="card-ask">ARV $130–160k on $60k buys</div>
+          </div>
+          <div class="card-hoa none">Most SFH — no HOA</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
+            <a class="action primary" href="https://www.google.com/flights#flt=TPA.BHM" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → BHM →</a>
+          </div>
+        </div>
+      </a>
+
+      <!-- Memphis TN -->
+      <a class="card" href="https://www.zillow.com/homes/foreclosures/Memphis-TN_rb/" target="_blank">
+        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <span style="color:#fff;font-size:22px">✈</span>
+          <span style="color:#fff;font-size:13px;font-weight:600">2 hr from Tampa</span>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Memphis, TN</div>
+              <div class="card-locale">Shelby County · 2 hr flight</div>
+            </div>
+            <span class="card-score">Market</span>
+          </div>
+          <div class="card-specs"><span>Bank-owned inventory</span><span>Often $45–75k</span></div>
+          <div class="card-money">
+            <div class="card-spread">$70–110k spreads possible</div>
+            <div class="card-ask">High rental demand · strong flip market</div>
+          </div>
+          <div class="card-hoa none">Most SFH — no HOA</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
+            <a class="action primary" href="https://www.google.com/flights#flt=TPA.MEM" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → MEM →</a>
+          </div>
+        </div>
+      </a>
+
+      <!-- Savannah GA -->
+      <a class="card" href="https://www.zillow.com/homes/foreclosures/Savannah-GA_rb/" target="_blank">
+        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <span style="color:#fff;font-size:22px">✈</span>
+          <span style="color:#fff;font-size:13px;font-weight:600">1 hr from Tampa</span>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">Savannah, GA</div>
+              <div class="card-locale">Chatham County · 1 hr flight</div>
+            </div>
+            <span class="card-score">Market</span>
+          </div>
+          <div class="card-specs"><span>Growing market</span><span>Foreclosures $80–130k</span></div>
+          <div class="card-money">
+            <div class="card-spread">$50–80k spreads</div>
+            <div class="card-ask">Port growth driving demand</div>
+          </div>
+          <div class="card-hoa unknown">Varies by community</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
+            <a class="action primary" href="https://www.google.com/flights#flt=TPA.SAV" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → SAV →</a>
+          </div>
+        </div>
+      </a>
+
+      <!-- New Orleans LA -->
+      <a class="card" href="https://www.zillow.com/homes/foreclosures/New-Orleans-LA_rb/" target="_blank">
+        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
+          <span style="color:#fff;font-size:22px">✈</span>
+          <span style="color:#fff;font-size:13px;font-weight:600">1.5 hr from Tampa</span>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">New Orleans, LA</div>
+              <div class="card-locale">Orleans Parish · 1.5 hr flight</div>
+            </div>
+            <span class="card-score">Market</span>
+          </div>
+          <div class="card-specs"><span>Post-storm distressed inventory</span></div>
+          <div class="card-money">
+            <div class="card-spread">Deep discounts still available</div>
+            <div class="card-ask">Shotgun houses, doubles common</div>
+          </div>
+          <div class="card-hoa none">Most SFH — no HOA</div>
+          <div style="font-size:12px;color:var(--warn);margin-top:6px">⚠️ Flood zone research critical here</div>
+          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
+            <a class="action primary" href="https://www.google.com/flights#flt=TPA.MSY" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → MSY →</a>
+          </div>
+        </div>
+      </a>
+
+    </div>
+    <div class="notes-pad">
+      <div class="notes-pad-head">
+        <div><h3>Flight notes</h3><div class="notes-meta">Markets you want Richard to dig into specifically.</div></div>
+        <div class="notes-pad-actions">
+          <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
+        </div>
+      </div>
+      <div class="notes-rows">
+        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="Market to research…"></div>
+        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- LIEN PROTOCOL -->
   <section id="page-liens" class="page">
     <div class="list-intro">
@@ -1414,6 +1609,115 @@
     btn.closest('.notes-pad').querySelectorAll('.notes-input').forEach(i => i.value = '');
   }
 
+  /* ── Yay / Nay verdicts ── */
+  const STORAGE_KEY = 'pp_verdicts';
+
+  function getVerdicts() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+
+  function saveVerdict(cardId, verdict) {
+    const v = getVerdicts();
+    if (verdict === null) { delete v[cardId]; } else { v[cardId] = verdict; }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
+  }
+
+  function cardId(card) {
+    const t = card.querySelector('.card-title');
+    const l = card.querySelector('.card-locale');
+    return ((t ? t.textContent : '') + '|' + (l ? l.textContent : '')).trim();
+  }
+
+  function applyVerdict(card, verdict) {
+    card.dataset.verdict = verdict || '';
+    const yay = card.querySelector('.verdict-btn.yay');
+    const nay = card.querySelector('.verdict-btn.nay');
+    if (yay) yay.classList.toggle('active', verdict === 'yay');
+    if (nay) nay.classList.toggle('active', verdict === 'nay');
+  }
+
+  function setVerdict(btn, verdict, card) {
+    const current = card.dataset.verdict;
+    const next = current === verdict ? null : verdict;
+    applyVerdict(card, next);
+    saveVerdict(cardId(card), next);
+    updatePassedBar(card.closest('.page'));
+  }
+
+  function updatePassedBar(section) {
+    if (!section) return;
+    const id = section.id.replace('page-', '');
+    const bar = document.getElementById('passed-bar-' + id);
+    const label = document.getElementById('passed-label-' + id);
+    if (!bar || !label) return;
+    const nays = section.querySelectorAll('.card[data-verdict="nay"]').length;
+    if (nays > 0) {
+      bar.classList.add('visible');
+      label.textContent = nays + ' passed' + (bar.dataset.showing === '1' ? ' (showing)' : ' (hidden)');
+      bar.querySelector('button').textContent = bar.dataset.showing === '1' ? 'Hide passed' : 'Show passed';
+    } else {
+      bar.classList.remove('visible');
+      bar.dataset.showing = '0';
+    }
+  }
+
+  function togglePassed(id) {
+    const section = document.getElementById('page-' + id);
+    const bar = document.getElementById('passed-bar-' + id);
+    if (!section || !bar) return;
+    const showing = bar.dataset.showing === '1';
+    bar.dataset.showing = showing ? '0' : '1';
+    section.querySelectorAll('.card[data-verdict="nay"]').forEach(c => {
+      c.style.display = showing ? '' : 'flex';
+    });
+    updatePassedBar(section);
+  }
+
+  function injectVerdictButtons() {
+    document.querySelectorAll('.card').forEach(card => {
+      if (card.querySelector('.card-verdict')) return;
+      const div = document.createElement('div');
+      div.className = 'card-verdict';
+      div.onclick = e => e.stopPropagation();
+      const yay = document.createElement('button');
+      yay.className = 'verdict-btn yay';
+      yay.textContent = '✓  Pursue';
+      yay.onclick = () => setVerdict(yay, 'yay', card);
+      const nay = document.createElement('button');
+      nay.className = 'verdict-btn nay';
+      nay.textContent = '✗  Pass';
+      nay.onclick = () => setVerdict(nay, 'nay', card);
+      div.appendChild(yay);
+      div.appendChild(nay);
+      const body = card.querySelector('.card-body');
+      if (body) body.appendChild(div);
+    });
+  }
+
+  function loadSavedVerdicts() {
+    const verdicts = getVerdicts();
+    document.querySelectorAll('.card').forEach(card => {
+      const id = cardId(card);
+      const verdict = verdicts[id];
+      if (verdict) {
+        applyVerdict(card, verdict);
+        if (verdict === 'nay') card.style.display = 'none';
+      }
+    });
+    document.querySelectorAll('.page').forEach(updatePassedBar);
+  }
+
+  function updateTabCounts() {
+    const tabs = ['progress','soon','watch','flight'];
+    tabs.forEach(id => {
+      const el = document.getElementById('count-' + id);
+      const section = document.getElementById('page-' + id);
+      if (el && section) {
+        el.textContent = section.querySelectorAll('.card').length;
+      }
+    });
+  }
+
   /* ── Carousels ── */
   function initCarousels() {
     document.querySelectorAll('.carousel').forEach(carousel => {
@@ -1472,7 +1776,12 @@
     });
   }
 
-  document.addEventListener('DOMContentLoaded', initCarousels);
+  document.addEventListener('DOMContentLoaded', () => {
+    initCarousels();
+    injectVerdictButtons();
+    loadSavedVerdicts();
+    updateTabCounts();
+  });
 </script>
 </body>
 </html>
