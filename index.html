@@ -218,6 +218,19 @@
   .card-spread { font-size: 18px; font-weight: 700; color: var(--money); letter-spacing: -0.015em; }
   .card-ask { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
 
+  .card-hoa {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; font-weight: 500;
+    padding: 6px 10px; border-radius: 6px;
+    margin-top: 8px;
+  }
+  .card-hoa::before { content: 'HOA'; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; opacity: 0.7; }
+  .card-hoa.none { background: var(--money-soft); color: var(--money); }
+  .card-hoa.low { background: var(--money-soft); color: var(--money); }
+  .card-hoa.high { background: var(--warn-soft); color: var(--warn); }
+  .card-hoa.danger { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
+  .card-hoa.unknown { background: var(--surface-2); color: var(--muted); }
+
   /* MAPS LINK — address that opens Google Maps directions */
   .maps-link {
     display: inline-flex; align-items: center; gap: 5px;
@@ -579,7 +592,7 @@
             <div class="card-spread">+$100k+ spread</div>
             <div class="card-ask">Opening bid $65,000 · EMV $200,212</div>
           </div>
-          <div style="margin-top:8px;font-size:12px;color:var(--warn);font-weight:600">HOA $398/mo — verify before bidding</div>
+          <div class="card-hoa high">$398/mo — verify what's included before bidding</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=21019+Sunpoint+Way+Lutz+FL+33558" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/21019+Sunpoint+Way+Lutz+FL+33558" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -609,6 +622,7 @@
             <div class="card-spread">+$80–100k spread</div>
             <div class="card-ask">Ask $105,000 · Area avg $233k</div>
           </div>
+          <div class="card-hoa none">None — SFH foreclosure</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=119+W+7th+St+Lakeland+FL+33805" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/119+W+7th+St+Lakeland+FL+33805" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -638,6 +652,7 @@
             <div class="card-spread">+$60–80k spread</div>
             <div class="card-ask">Ask $180,000 · Case #093-602712</div>
           </div>
+          <div class="card-hoa unknown">Unknown — verify with HUD listing</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=4625+Oak+Hill+Ter+Sarasota+FL+34232" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/4625+Oak+Hill+Ter+Sarasota+FL+34232" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -667,6 +682,7 @@
             <div class="card-spread">+$70–100k spread</div>
             <div class="card-ask">Ask $109,200 · Needs full renovation</div>
           </div>
+          <div class="card-hoa unknown">Unknown — verify before offer</div>
           <div style="font-size:12px;color:var(--warn);margin-top:6px">⚠️ Check flood zone — near Tampa Bay</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=250+Douglas+Rd+W+Oldsmar+FL+34677" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
@@ -697,7 +713,7 @@
             <div class="card-spread">+$60–80k spread</div>
             <div class="card-ask">Ask $218,400 · Last sold $325k (Feb '24)</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Summerfield Village · community pools · HOA likely</div>
+          <div class="card-hoa high">Likely $150–250/mo — Summerfield Village (pools, amenities)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=13202+Laraway+Ct+Riverview+FL+33579" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/13202+Laraway+Ct+Riverview+FL+33579" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -727,6 +743,7 @@
             <div class="card-spread">Est. +$50–70k spread</div>
             <div class="card-ask">Ask $189,900 · Verify still active</div>
           </div>
+          <div class="card-hoa none">None — SFH in Ybor Heights</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=913+E+28th+Ave+Tampa+FL+33605" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/913+E+28th+Ave+Tampa+FL+33605" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -756,7 +773,7 @@
             <div class="card-spread">Est. +$50–70k spread</div>
             <div class="card-ask">Ask $216,000 · Gated community</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Windsor Place at River Ridge · verify HOA fees</div>
+          <div class="card-hoa high">Unknown — gated community (Windsor Place), verify before offer</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=7814+Brisbane+Ct+New+Port+Richey+FL+34654" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/7814+Brisbane+Ct+New+Port+Richey+FL+34654" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -786,7 +803,7 @@
             <div class="card-spread">Est. +$40–60k spread</div>
             <div class="card-ask">Ask $204,250 · Price cut $10,750</div>
           </div>
-          <div style="font-size:12px;color:var(--warn);margin-top:6px">⚠️ Verify HOA dues + special assessments</div>
+          <div class="card-hoa high">Unknown — condo, verify dues + special assessments before offer</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2805+73rd+Street+Ct+W+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/2805+73rd+Street+Ct+W+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -814,8 +831,9 @@
           <div class="card-specs"><span>2 bd / 2 ba</span><span>1,039 sqft</span><span>Foreclosure</span></div>
           <div class="card-money">
             <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $194,900 · Verify HOA</div>
+            <div class="card-ask">Ask $194,900</div>
           </div>
+          <div class="card-hoa unknown">Unknown — planned community, likely has HOA</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2237+Firestone+Pl+Winter+Haven+FL+33884" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/2237+Firestone+Pl+Winter+Haven+FL+33884" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -843,9 +861,9 @@
           <div class="card-specs"><span>3 bd / 2.5 ba</span><span>1,356 sqft</span><span>Built 1973</span></div>
           <div class="card-money">
             <div class="card-spread">Flip only — fast exit needed</div>
-            <div class="card-ask">Ask $114,900 · HOA $476/mo ⚠️</div>
+            <div class="card-ask">Ask $114,900</div>
           </div>
-          <div style="font-size:12px;color:var(--danger);margin-top:6px">HOA $5,712/yr kills hold strategy — buy and flip fast</div>
+          <div class="card-hoa danger">$476/mo ($5,712/yr) — flip only, kills any hold strategy</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=965+Whitman+Dr+Sarasota+FL+34243" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/965+Whitman+Dr+Sarasota+FL+34243" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -875,6 +893,7 @@
             <div class="card-spread">Est. +$40–60k spread</div>
             <div class="card-ask">Ask $244,900–$289,900 · Verify price</div>
           </div>
+          <div class="card-hoa none">None — SFH in Palm River area</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=7620+Dennison+Dr+Tampa+FL+33619" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/7620+Dennison+Dr+Tampa+FL+33619" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -904,6 +923,7 @@
             <div class="card-spread">Est. +$50–70k spread</div>
             <div class="card-ask">Ask $108,000 · Outside primary zone</div>
           </div>
+          <div class="card-hoa none">None — HUD SFH</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2913+Pinewood+Dr+NE+Palm+Bay+FL+32905" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/2913+Pinewood+Dr+NE+Palm+Bay+FL+32905" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -1155,6 +1175,7 @@
             <div class="card-spread">Strong negotiating leverage</div>
             <div class="card-ask">Ask $185,900 · Well/septic verify</div>
           </div>
+          <div class="card-hoa none">None — rural SFH on acreage</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=17889+Thomas+Blvd+Hudson+FL+34667" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/17889+Thomas+Blvd+Hudson+FL+34667" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -1184,6 +1205,7 @@
             <div class="card-spread">Exception deal if numbers work</div>
             <div class="card-ask">Ask $299,900 · Over $250k target</div>
           </div>
+          <div class="card-hoa unknown">Unknown — verify with county records</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=9056+Rosco+Trl+Brooksville+FL+34602" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/9056+Rosco+Trl+Brooksville+FL+34602" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -1213,6 +1235,7 @@
             <div class="card-spread">Waterfront premium if clean title</div>
             <div class="card-ask">Ask $311,600 · Gulf access · Sold as-is</div>
           </div>
+          <div class="card-hoa unknown">Unknown — Peace River Shores, verify</div>
           <div style="font-size:12px;color:var(--danger);margin-top:6px">⚠️ Flood zone — verify flood insurance cost</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=155+Summerset+Dr+Punta+Gorda+FL+33982" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
@@ -1243,6 +1266,7 @@
             <div class="card-spread">Est. +$40–60k spread</div>
             <div class="card-ask">Ask $233,100 · Case #095-600656</div>
           </div>
+          <div class="card-hoa none">None — HUD SFH</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=5481+Burnham+Ct+North+Fort+Myers+FL+33903" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/5481+Burnham+Ct+North+Fort+Myers+FL+33903" target="_blank" onclick="event.stopPropagation()">Street View</a>
@@ -1272,6 +1296,7 @@
             <div class="card-spread">Est. +$40–60k spread</div>
             <div class="card-ask">Ask $175,000 · 4/2 at this price is rare</div>
           </div>
+          <div class="card-hoa none">None — HUD rural SFH</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
             <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=14455+NW+284th+St+Okeechobee+FL+34972" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
             <a class="action secondary" href="https://www.google.com/maps/place/14455+NW+284th+St+Okeechobee+FL+34972" target="_blank" onclick="event.stopPropagation()">Street View</a>
