@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Property Field Sheet</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #111; color: #fff; min-height: 100vh; }
+
+  /* TOP NAV */
+  .nav { background: #000; padding: 14px 16px 0; position: sticky; top: 0; z-index: 99; }
+  .nav h1 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; padding-bottom: 10px; }
+  .nav h1 span { color: #f59e0b; }
+  .tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-bottom: 0; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 8px 14px; font-size: 12px; font-weight: 600; border-radius: 8px 8px 0 0; background: #1a1a1a; color: #666; cursor: pointer; white-space: nowrap; border: 1px solid #222; border-bottom: none; }
+  .tab.active { background: #1e293b; color: #fff; border-color: #334155; }
+
+  /* PAGE */
+  .page { display: none; padding: 14px; max-width: 500px; margin: 0 auto; }
+  .page.active { display: block; }
+
+  /* PROPERTY CARD */
+  .prop-card { background: #1e293b; border-radius: 16px; overflow: hidden; margin-bottom: 12px; }
+
+  /* STREET VIEW IMAGE AREA */
+  .street-view { background: #0f172a; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; position: relative; overflow: hidden; }
+  .street-view img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .street-view-placeholder { text-align: center; }
+  .street-view-placeholder p { font-size: 12px; color: #475569; margin-bottom: 8px; }
+  .sv-btn { display: inline-block; background: #1d4ed8; color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; text-decoration: none; }
+  .score-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(6px); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: 800; }
+  .score-hot { color: #f59e0b; }
+  .score-good { color: #60a5fa; }
+
+  /* CARD BODY */
+  .card-body { padding: 14px; }
+  .address { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .sub { font-size: 12px; color: #94a3b8; margin-bottom: 14px; }
+
+  /* PROFIT BLOCK */
+  .profit-block { background: #052e16; border: 1px solid #166534; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }
+  .profit-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #4ade80; margin-bottom: 2px; }
+  .profit-num { font-size: 28px; font-weight: 900; color: #22c55e; letter-spacing: -1px; }
+  .profit-note { font-size: 11px; color: #4ade80; margin-top: 2px; }
+
+  /* STATS GRID */
+  .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 12px; }
+  .stat { background: #0f172a; border-radius: 8px; padding: 8px; }
+  .stat-l { font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; color: #475569; margin-bottom: 3px; }
+  .stat-v { font-size: 13px; font-weight: 700; }
+  .stat-v.ok { color: #4ade80; }
+  .stat-v.warn { color: #fb923c; }
+  .stat-v.danger { color: #f87171; }
+
+  /* COMP ROW */
+  .comp-row { display: flex; align-items: center; justify-content: space-between; background: #0f172a; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+  .comp-left { font-size: 11px; color: #64748b; }
+  .comp-right { font-size: 14px; font-weight: 800; color: #22c55e; }
+
+  /* WARNING */
+  .warn-box { background: #431407; border: 1px solid #ea580c; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; font-size: 12px; color: #fdba74; line-height: 1.5; }
+  .warn-box strong { color: #fb923c; display: block; margin-bottom: 3px; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 600; text-decoration: none; }
+  .btn-blue { background: #1d4ed8; color: #fff; }
+  .btn-dark { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .btn-red { background: #7f1d1d; color: #fca5a5; border: 1px solid #991b1b; }
+
+  /* CHECKLIST */
+  .checks { background: #0f172a; border-radius: 10px; padding: 12px; }
+  .checks h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #475569; margin-bottom: 10px; }
+  .check { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+  .box { width: 20px; height: 20px; border: 2px solid #334155; border-radius: 5px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .box.checked { background: #22c55e; border-color: #22c55e; }
+  .check-txt { font-size: 13px; color: #cbd5e1; line-height: 1.4; }
+
+  /* OVERVIEW */
+  .overview-row { display: flex; align-items: center; background: #1e293b; border-radius: 12px; padding: 12px; margin-bottom: 8px; gap: 12px; text-decoration: none; cursor: pointer; }
+  .rank { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; flex-shrink: 0; }
+  .r1 { background: #78350f; color: #fbbf24; }
+  .r2 { background: #1e3a5f; color: #60a5fa; }
+  .r3 { background: #1e3a5f; color: #60a5fa; }
+  .r4 { background: #1f2937; color: #9ca3af; }
+  .r5 { background: #1f2937; color: #9ca3af; }
+  .r6 { background: #1f2937; color: #9ca3af; }
+  .ov-info { flex: 1; }
+  .ov-name { font-size: 14px; font-weight: 700; }
+  .ov-sub { font-size: 11px; color: #64748b; margin-top: 2px; }
+  .ov-profit { text-align: right; }
+  .ov-p { font-size: 14px; font-weight: 800; color: #22c55e; }
+  .ov-ask { font-size: 11px; color: #475569; }
+
+  /* LIEN PAGE */
+  .lien-card { background: #1e293b; border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .lien-title { font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+  .lien-prop { display: flex; flex-direction: column; gap: 4px; background: #0f172a; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+  .lien-prop-name { font-size: 13px; font-weight: 700; }
+  .lien-search-term { font-size: 11px; color: #94a3b8; font-family: monospace; }
+  .step { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+  .step-n { width: 24px; height: 24px; background: #dc2626; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+  .step-t { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+  .result-key { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+
+  /* LIEN STATUS WIDGET */
+  .lien-status { display: flex; gap: 6px; margin-bottom: 12px; }
+  .ls-btn { flex: 1; padding: 10px 6px; border-radius: 10px; font-size: 12px; font-weight: 700; text-align: center; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+  .ls-btn.not-checked { background: #1e293b; border-color: #334155; color: #64748b; }
+  .ls-btn.ls-clean { background: #052e16; border-color: #166534; color: #4ade80; }
+  .ls-btn.ls-issue { background: #450a0a; border-color: #991b1b; color: #fca5a5; }
+  .ls-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #475569; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <h1>🏠 Field Sheet — <span>Sweep 1</span></h1>
+  <div class="tabs">
+    <div class="tab active" onclick="show('overview', this)">All</div>
+    <div class="tab" onclick="show('p1', this)">① Alhambra</div>
+    <div class="tab" onclick="show('p2', this)">② Unity</div>
+    <div class="tab" onclick="show('p3', this)">③ Hawks</div>
+    <div class="tab" onclick="show('p4', this)">④ Alsobrook</div>
+    <div class="tab" onclick="show('p5', this)">⑤ Trapnell</div>
+    <div class="tab" onclick="show('p6', this)">⑥ Bel Air</div>
+    <div class="tab" onclick="show('liens', this)">⚠️ Liens</div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="page-overview" class="page active">
+  <div style="padding: 4px 0 10px; font-size: 11px; color: #475569; text-align: center;">Tap a property to open it</div>
+
+  <div class="overview-row" onclick="show('p1', document.querySelectorAll('.tab')[1])">
+    <div class="rank r1">1</div>
+    <div class="ov-info">
+      <div class="ov-name">Alhambra Crest Dr — Ruskin</div>
+      <div class="ov-sub">4/3 · 2,440 sqft · Built 2008 · Score 27/30 🔥</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$100k–$180k</div><div class="ov-ask">Ask $147,100</div></div>
+  </div>
+
+  <div class="overview-row" onclick="show('p2', document.querySelectorAll('.tab')[2])">
+    <div class="rank r2">2</div>
+    <div class="ov-info">
+      <div class="ov-name">Unity Village Dr — Ruskin</div>
+      <div class="ov-sub">3/2 · ~1,470 sqft · Built 2006 · Score 23/30</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$95k–$110k</div><div class="ov-ask">Ask $139,900</div></div>
+  </div>
+
+  <div class="overview-row" onclick="show('p3', document.querySelectorAll('.tab')[3])">
+    <div class="rank r3">3</div>
+    <div class="ov-info">
+      <div class="ov-name">Hawks Island/View Dr — Ruskin</div>
+      <div class="ov-sub">3/2 · Score 23/30</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$90k–$110k</div><div class="ov-ask">Ask $140,600</div></div>
+  </div>
+
+  <div class="overview-row" onclick="show('p4', document.querySelectorAll('.tab')[4])">
+    <div class="rank r4">4</div>
+    <div class="ov-info">
+      <div class="ov-name">W Alsobrook St — Plant City</div>
+      <div class="ov-sub">3/1 · Score 23/30 · ⚠️ Flood check</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$70k–$100k</div><div class="ov-ask">Ask $135,000</div></div>
+  </div>
+
+  <div class="overview-row" onclick="show('p5', document.querySelectorAll('.tab')[5])">
+    <div class="rank r5">5</div>
+    <div class="ov-info">
+      <div class="ov-name">E Trapnell Rd — Plant City</div>
+      <div class="ov-sub">2/1 · Rural · Score 22/30 · ⚠️ Flood check</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$30k–$65k</div><div class="ov-ask">Ask $126,000</div></div>
+  </div>
+
+  <div class="overview-row" onclick="show('p6', document.querySelectorAll('.tab')[6])">
+    <div class="rank r6">6</div>
+    <div class="ov-info">
+      <div class="ov-name">Bel Air Ave — Sun City Center</div>
+      <div class="ov-sub">2/2 · 1,344 sqft · 55+ community · Score 21/30</div>
+    </div>
+    <div class="ov-profit"><div class="ov-p">$50k–$65k</div><div class="ov-ask">Ask $159,000</div></div>
+  </div>
+
+  <div style="background:#1e293b;border-radius:12px;padding:14px;margin-top:4px;">
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#475569;margin-bottom:8px;">Drive Order</div>
+    <div style="font-size:13px;color:#cbd5e1;line-height:1.8;">
+      <strong style="color:#f59e0b;">Ruskin (do all 3 together):</strong> Alhambra → Unity Village → Hawks View/Island — all within 10 min of each other.<br>
+      <strong style="color:#60a5fa;">Plant City:</strong> Alsobrook → Trapnell (check Street View on Trapnell first).<br>
+      <strong style="color:#94a3b8;">Sun City Center:</strong> Optional — only if other trips go well.
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 1 -->
+<div id="page-p1" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge score-hot">27/30 🔥 BUY</div>
+      <div class="street-view-placeholder">
+        <p>Street View</p>
+        <a href="https://www.google.com/maps/@27.7176,-82.4032,3a,75y,90t/data=!3m1!1e3" class="sv-btn" target="_blank">📷 Open Street View</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">1201 Alhambra Crest Dr</div>
+      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$100k – $180k</div>
+        <div class="profit-note">Comps $303k–$369k on same street · even $50k rehab leaves $100k+</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$147,100</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">4 / 3</div></div>
+        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">~2,440</div></div>
+        <div class="stat"><div class="stat-l">Built</div><div class="stat-v ok">2008 ✓</div></div>
+        <div class="stat"><div class="stat-l">Type</div><div class="stat-v ok">SFH ✓</div></div>
+        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v warn">Verify</div></div>
+      </div>
+
+      <div class="comp-row">
+        <div class="comp-left">Comps on same street (2024–25)</div>
+        <div class="comp-right">$303k – $369k</div>
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=1201+Alhambra+Crest+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
+        <a href="https://www.google.com/maps/@27.7176,-82.4032,3a,75y,90t/data=!3m1!1e3" class="btn btn-dark" target="_blank">📷 Street View</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>On Site — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Real house — not mobile/manufactured?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Roof condition — missing shingles, sagging?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Foundation — cracks, water stains at base?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Windows intact or boarded?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighboring homes well-kept?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Bank notice / lockbox present?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph front + both sides</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 2 -->
+<div id="page-p2" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge score-good">23/30 BUY</div>
+      <div class="street-view-placeholder">
+        <p>Street View — check 2120 AND 2206</p>
+        <a href="https://www.google.com/maps/@27.7230,-82.4010,3a,75y,90t/data=!3m1!1e3" class="sv-btn" target="_blank">📷 Open Street View</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">2120 or 2206 Unity Village Dr</div>
+      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$95k – $110k</div>
+        <div class="profit-note">3/2 built 2006 · comps $250k–$297k · light cosmetic flip</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$139,900</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 2</div></div>
+        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">~1,470</div></div>
+        <div class="stat"><div class="stat-l">Built</div><div class="stat-v ok">2006 ✓</div></div>
+        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v ok">Zone X</div></div>
+        <div class="stat"><div class="stat-l">HOA</div><div class="stat-v warn">Verify</div></div>
+      </div>
+
+      <div class="comp-row">
+        <div class="comp-left">Unity Village Dr comps</div>
+        <div class="comp-right">$250k – $297k</div>
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=2120+Unity+Village+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate → 2120</a>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=2206+Unity+Village+Dr+Ruskin+FL+33570" class="btn btn-dark" target="_blank">📍 Also check → 2206</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>On Site — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Which house (2120 or 2206) has bank notice?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Exterior condition — paint, fascia, gutters</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">HVAC unit outside — looks recent?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Any water staining on exterior walls</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighborhood well maintained?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph both addresses</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 3 -->
+<div id="page-p3" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge score-good">23/30 BUY</div>
+      <div class="street-view-placeholder">
+        <p>Verify: Hawks View Dr OR Hawks Island Dr?</p>
+        <a href="https://www.google.com/maps/search/Hawks+View+Dr+Ruskin+FL+33570" class="sv-btn" target="_blank">🗺️ Find the Street</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">Hawks Island Dr / Hawks View Dr</div>
+      <div class="sub">Ruskin, FL 33570 · Bank-Owned Foreclosure</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$90k – $110k</div>
+        <div class="profit-note">3/2 in Ruskin · comps $260k–$355k</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$140,600</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 2</div></div>
+        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v ok">Zone X</div></div>
+        <div class="stat"><div class="stat-l">Street?</div><div class="stat-v warn">Verify</div></div>
+      </div>
+
+      <div class="warn-box">
+        <strong>⚠️ Confirm Street Name</strong>
+        Listing says "Hawks Island Dr" — the confirmed foreclosure in this area is on "Hawks View Dr." Check both on Google Maps when you arrive. One of them has the property.
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+View+Dr+Ruskin+FL+33570" class="btn btn-blue" target="_blank">📍 Navigate → Hawks View Dr</a>
+        <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+Island+Dr+Ruskin+FL+33570" class="btn btn-dark" target="_blank">📍 Also try → Hawks Island Dr</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Run Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>On Site — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Confirm actual street name</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find the house with foreclosure notice</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Roof, exterior, foundation</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Subdivision or isolated street?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 4 -->
+<div id="page-p4" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge score-good">23/30</div>
+      <div class="street-view-placeholder">
+        <p>W Alsobrook St, Plant City</p>
+        <a href="https://www.google.com/maps/search/W+Alsobrook+St+Plant+City+FL+33563" class="sv-btn" target="_blank">📷 Street View</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">W Alsobrook St</div>
+      <div class="sub">Plant City, FL 33563 · Bank-Owned Foreclosure</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$70k – $100k</div>
+        <div class="profit-note">Add 2nd bath → $240k+ ARV · Plant City median $335k</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$135,000</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">3 / 1</div></div>
+        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v danger">⚠️ Check</div></div>
+        <div class="stat"><div class="stat-l">HOA</div><div class="stat-v ok">Likely None</div></div>
+      </div>
+
+      <div class="warn-box">
+        <strong>⚠️ Flood Zone — Check Before Driving</strong>
+        East Alsobrook = confirmed Zone AE (mandatory flood insurance, adds $2k+/yr, harder to sell). The West side may be different. Verify at msc.fema.gov — search "W Alsobrook St, Plant City FL 33563" — before making any offer.
+      </div>
+
+      <div class="comp-row">
+        <div class="comp-left">Plant City median sold 2025</div>
+        <div class="comp-right">$335,000</div>
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=W+Alsobrook+St+Plant+City+FL+33563" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
+        <a href="https://msc.fema.gov/portal/search" class="btn btn-red" target="_blank">🌊 Check Flood Zone First</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-dark" target="_blank">⚠️ Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>On Site — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Street sits low? Water staining on home bases?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find house number with bank notice</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Estimate age of structure from outside</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Room to add 2nd bath (garage/addition)?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 5 -->
+<div id="page-p5" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge" style="color:#fbbf24;">22/30</div>
+      <div class="street-view-placeholder">
+        <p>Check Street View BEFORE driving</p>
+        <a href="https://www.google.com/maps/search/E+Trapnell+Rd+Plant+City+FL+33566" class="sv-btn" target="_blank">🌐 Street View — Trapnell Rd</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">E Trapnell Rd</div>
+      <div class="sub">Plant City, FL 33566 · Bank-Owned Foreclosure · Rural</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$30k – $65k</div>
+        <div class="profit-note">Lowest price on the list · rural location caps the ceiling</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$126,000</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">2 / 1</div></div>
+        <div class="stat"><div class="stat-l">Location</div><div class="stat-v warn">Rural</div></div>
+        <div class="stat"><div class="stat-l">Flood</div><div class="stat-v danger">⚠️ Partial A</div></div>
+      </div>
+
+      <div class="warn-box">
+        <strong>⚠️ Street View This Before You Drive</strong>
+        Some Trapnell Rd parcels are isolated rural with no neighboring homes. If Street View shows a house surrounded by fields — skip the trip. If it shows a neighborhood pocket — go look.
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/search/E+Trapnell+Rd+Plant+City+FL+33566" class="btn btn-blue" target="_blank">🌐 Open on Google Maps First</a>
+        <a href="https://msc.fema.gov/portal/search" class="btn btn-red" target="_blank">🌊 Check Flood Zone</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-dark" target="_blank">⚠️ Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>If You Go — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Neighboring homes visible from road?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Any mobile homes nearby? (Skip if yes)</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Low-lying land, standing water nearby?</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Condition visible from road</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROPERTY 6 -->
+<div id="page-p6" class="page">
+  <div class="prop-card">
+    <div class="street-view">
+      <div class="score-badge" style="color:#94a3b8;">21/30</div>
+      <div class="street-view-placeholder">
+        <p>Bel Air Ave, Sun City Center</p>
+        <a href="https://www.google.com/maps/search/Bel+Air+Ave+Sun+City+Center+FL+33573" class="sv-btn" target="_blank">📷 Street View</a>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="address">Bel Air Ave</div>
+      <div class="sub">Sun City Center, FL 33573 · Foreclosure · 55+ Community</div>
+
+      <div class="profit-block">
+        <div class="profit-label">Estimated Profit</div>
+        <div class="profit-num">$50k – $65k</div>
+        <div class="profit-note">702 Bel Air sold $270k (Sep 2023) · light cosmetic flip</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="stat-l">Ask</div><div class="stat-v">$159,000</div></div>
+        <div class="stat"><div class="stat-l">Beds/Bath</div><div class="stat-v">2 / 2</div></div>
+        <div class="stat"><div class="stat-l">Sqft</div><div class="stat-v">1,344</div></div>
+        <div class="stat"><div class="stat-l">Comp</div><div class="stat-v ok">$270,000</div></div>
+        <div class="stat"><div class="stat-l">Age Rule</div><div class="stat-v warn">55+ Only</div></div>
+        <div class="stat"><div class="stat-l">Cash Buyers</div><div class="stat-v ok">Very High</div></div>
+      </div>
+
+      <div class="warn-box">
+        <strong>⚠️ 55+ Community — Buyers Must Be 55+</strong>
+        Investors can buy and sell freely. But YOUR BUYER must be 55+. Smaller buyer pool, but cash buyers are very common in Sun City Center. HOA fees: SCCA = ~$30–$50/yr (fine). Kings Point = $500+/mo (avoid). Confirm which community it's in.
+      </div>
+
+      <div class="ls-label">Lien Status</div>
+      <div class="lien-status">
+        <div class="ls-btn not-checked" onclick="setLien(this,'not-checked')">— Not Checked</div>
+        <div class="ls-btn ls-clean" onclick="setLien(this,'ls-clean')">✓ Clean</div>
+        <div class="ls-btn ls-issue" onclick="setLien(this,'ls-issue')">⚠️ Issue Found</div>
+      </div>
+
+      <div class="btn-row">
+        <a href="https://www.google.com/maps/dir/?api=1&destination=Bel+Air+Ave+Sun+City+Center+FL+33573" class="btn btn-blue" target="_blank">📍 Navigate Here</a>
+        <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank">⚠️ Lien Search</a>
+      </div>
+
+      <div class="checks">
+        <h3>On Site — Check These</h3>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Find house number with bank notice</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">SCCA or Kings Point signage? (Huge HOA difference)</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">Exterior condition — roof, paint, HVAC age</div></div>
+        <div class="check"><div class="box" onclick="toggle(this)"></div><div class="check-txt">📸 Photograph</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIENS PAGE -->
+<div id="page-liens" class="page">
+  <div class="lien-card">
+    <div class="lien-title" style="color:#f87171;">⚠️ Lien Search — Do This Before Any Offer</div>
+    <p style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:14px;">Takes 10 minutes per property. It's a free public website — just click the link below, type the search term, and read the results. No account, no phone call needed.</p>
+
+    <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" class="btn btn-red" target="_blank" style="margin-bottom:14px;display:flex;">🔍 Open Hillsborough Official Records</a>
+
+    <div style="font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#475569;margin-bottom:8px;">Search Term for Each Property</div>
+
+    <div class="lien-prop"><div class="lien-prop-name">① Alhambra Crest Dr</div><div class="lien-search-term">Type: "Alhambra Crest"</div></div>
+    <div class="lien-prop"><div class="lien-prop-name">② Unity Village Dr</div><div class="lien-search-term">Type: "Unity Village"</div></div>
+    <div class="lien-prop"><div class="lien-prop-name">③ Hawks Island / Hawks View Dr</div><div class="lien-search-term">Type: "Hawks View" and also "Hawks Island"</div></div>
+    <div class="lien-prop"><div class="lien-prop-name">④ W Alsobrook St</div><div class="lien-search-term">Type: "Alsobrook"</div></div>
+    <div class="lien-prop"><div class="lien-prop-name">⑤ E Trapnell Rd</div><div class="lien-search-term">Type: "Trapnell"</div></div>
+    <div class="lien-prop"><div class="lien-prop-name">⑥ Bel Air Ave</div><div class="lien-search-term">Type: "Bel Air" + Sun City Center</div></div>
+  </div>
+
+  <div class="lien-card">
+    <div class="lien-title">What to Look For</div>
+    <div class="step"><div class="step-n">1</div><div class="step-t">Look for document types: <strong>Lis Pendens, Final Judgment, Claim of Lien, IRS Lien, Code Enforcement</strong></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-t">Check dates — look at records from the <strong>last 10 years</strong></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-t">If you see a lien, look for a matching <strong>Release of Lien or Satisfaction</strong> — that means it was paid off</div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-t">Open lien with no release = call a title company before you do anything else</div></div>
+
+    <div style="margin-top:10px;">
+      <div class="result-key">🟢 <span>No open liens → clean, proceed with confidence</span></div>
+      <div class="result-key">🟡 <span>Small HOA or code lien → negotiable at closing</span></div>
+      <div class="result-key">🔴 <span>Large judgment or IRS lien → title company call before any offer</span></div>
+    </div>
+  </div>
+
+  <div class="lien-card">
+    <div class="lien-title">Other Quick Checks</div>
+    <a href="https://hillstaxfl.gov" class="btn btn-dark" target="_blank" style="margin-bottom:8px;display:flex;">💰 Check Tax Status — hillstaxfl.gov</a>
+    <a href="https://msc.fema.gov/portal/search" class="btn btn-dark" target="_blank" style="margin-bottom:8px;display:flex;">🌊 FEMA Flood Zone — msc.fema.gov</a>
+    <a href="https://gis.hcpafl.org/propertysearch/" class="btn btn-dark" target="_blank" style="display:flex;">🏠 Property Appraiser — gis.hcpafl.org</a>
+  </div>
+</div>
+
+<script>
+function show(id, tabEl) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (tabEl && tabEl.classList) tabEl.classList.add('active');
+}
+function toggle(box) {
+  box.classList.toggle('checked');
+  box.innerHTML = box.classList.contains('checked') ? '✓' : '';
+}
+function setLien(btn, state) {
+  const group = btn.parentElement;
+  group.querySelectorAll('.ls-btn').forEach(b => {
+    b.style.opacity = '0.35';
+    b.style.borderColor = 'transparent';
+  });
+  btn.style.opacity = '1';
+  btn.style.borderColor = state === 'ls-clean' ? '#22c55e' : state === 'ls-issue' ? '#ef4444' : '#475569';
+}
+</script>
+</body>
+</html>
