@@ -18,7 +18,7 @@
     --ink-2: #2a2a28;
     --muted: #6b6862;
     --muted-2: #9a978f;
-    --accent: #ff5630;
+    --accent: #ff5630;          /* signal orange */
     --accent-soft: #fff0eb;
     --money: #00a86b;
     --money-soft: #e7f7f0;
@@ -34,6 +34,7 @@
     --shadow-lg: 0 4px 16px rgba(10,10,10,0.06), 0 12px 40px rgba(10,10,10,0.06);
     --radius: 12px;
     --radius-sm: 8px;
+    --radius-xs: 6px;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -51,22 +52,37 @@
 
   ::selection { background: var(--accent); color: #fff; }
 
-  .app { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  /* ====== APP SHELL ====== */
+  .app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
 
-  /* TOP BAR */
+  /* ====== TOP BAR ====== */
   .topbar {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 18px 0;
     border-bottom: 1px solid var(--border);
   }
   .brand {
     display: flex; align-items: center; gap: 10px;
-    font-weight: 600; font-size: 14px; letter-spacing: -0.01em;
+    font-family: 'Geist', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
   }
   .brand-mark {
-    width: 28px; height: 28px; border-radius: 7px;
+    width: 28px; height: 28px;
+    border-radius: 7px;
     background: var(--ink);
+    color: var(--bg);
     display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0;
   }
   .brand-mark::after {
     content: '';
@@ -77,459 +93,1023 @@
   }
   .topbar-meta {
     display: flex; align-items: center; gap: 18px;
-    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
   }
-  .live-dot {
-    display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--money); margin-right: 5px;
-    animation: pulse 2s infinite;
+  .topbar-meta .dot {
+    width: 5px; height: 5px;
+    background: var(--money);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+    box-shadow: 0 0 0 3px var(--money-soft);
   }
 
-  /* HEADER */
+  /* ====== HEADER ====== */
   .header {
-    padding: 48px 0 32px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 28px;
+    padding: 56px 0 36px;
   }
   .header-eyebrow {
-    font-family: 'Geist Mono', monospace; font-size: 11px;
-    text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 12px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 18px;
+    font-weight: 500;
   }
   .header h1 {
-    font-family: 'Instrument Serif', serif; font-weight: 400;
-    font-size: clamp(36px, 6vw, 64px); line-height: 1.0;
-    letter-spacing: -0.03em; margin-bottom: 14px;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(40px, 7vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 16px;
   }
-  .header h1 em { color: var(--accent); font-style: italic; }
-  .header-sub { font-size: 15px; color: var(--muted); max-width: 560px; line-height: 1.6; }
+  .header h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .header-sub {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.55;
+  }
 
-  /* STAT STRIP */
+  /* ====== STAT STRIP ====== */
   .stat-strip {
-    display: flex; border: 1px solid var(--border); border-radius: var(--radius);
-    overflow: hidden; margin-bottom: 28px; background: var(--surface);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 32px;
   }
-  .stat-cell { flex: 1; padding: 16px 20px; border-right: 1px solid var(--border); }
-  .stat-cell:last-child { border-right: none; }
+  @media (max-width: 720px) {
+    .stat-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat-cell {
+    background: var(--surface);
+    padding: 18px 20px;
+  }
   .stat-cell .l {
-    font-family: 'Geist Mono', monospace; font-size: 10px;
-    text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 6px;
   }
   .stat-cell .v {
-    font-family: 'Instrument Serif', serif; font-size: 28px;
-    font-weight: 400; letter-spacing: -0.02em; line-height: 1;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
   }
   .stat-cell .v.money { color: var(--money); }
 
-  /* TABS */
+  /* ====== TABS ====== */
   .tabs-wrap {
-    position: sticky; top: 0; background: var(--bg);
-    padding: 12px 0; z-index: 10;
-    border-bottom: 1px solid var(--border); margin-bottom: 32px;
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(250,250,249,0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    margin: 0 -24px;
+    padding: 0 24px;
+    border-bottom: 1px solid var(--border);
   }
-  .tabs { display: flex; gap: 4px; overflow-x: auto; }
+  .tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 8px 0;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 16px; border-radius: 100px;
-    font-size: 13px; font-weight: 500; cursor: pointer;
-    border: 1px solid transparent; background: transparent; color: var(--muted);
-    white-space: nowrap; transition: all 0.15s ease;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
   }
-  .tab:hover { color: var(--ink); background: var(--surface-2); }
-  .tab.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .tab:hover {
+    color: var(--ink);
+    background: var(--surface-2);
+  }
+  .tab.active {
+    color: var(--ink);
+    background: var(--surface);
+    border-color: var(--border);
+    box-shadow: var(--shadow-sm);
+    font-weight: 600;
+  }
   .tab-count {
-    background: rgba(255,255,255,0.2); padding: 1px 7px;
-    border-radius: 100px; font-size: 11px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-weight: 600;
   }
-  .tab:not(.active) .tab-count { background: var(--surface-2); color: var(--muted); }
-  .tab-status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .tab-status-dot.progress { background: var(--status-progress); }
-  .tab-status-dot.soon { background: var(--status-soon); }
-  .tab-status-dot.watch { background: var(--status-watch); }
+  .tab.active .tab-count {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .tab-status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tab-status-dot.progress { background: var(--status-progress); box-shadow: 0 0 0 3px rgba(0,168,107,0.15); }
+  .tab-status-dot.soon { background: var(--status-soon); box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+  .tab-status-dot.watch { background: var(--status-watch); box-shadow: 0 0 0 3px rgba(107,104,98,0.15); }
 
-  /* PAGES */
-  .page { display: none; }
+  /* ====== PAGES ====== */
+  .page { display: none; padding: 32px 0 80px; }
   .page.active { display: block; }
 
-  /* LIST INTRO */
+  /* ====== LIST VIEW (status pages) ====== */
   .list-intro {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 24px; margin-bottom: 24px; flex-wrap: wrap;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
   }
   .list-intro h2 {
-    font-family: 'Instrument Serif', serif; font-weight: 400;
-    font-size: 32px; letter-spacing: -0.02em; margin-bottom: 4px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
   }
-  .list-intro p { font-size: 14px; color: var(--muted); max-width: 480px; }
+  .list-intro p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 480px;
+  }
   .list-intro-count {
-    font-family: 'Instrument Serif', serif; font-size: 48px;
-    color: var(--muted-2); letter-spacing: -0.03em; line-height: 1; flex-shrink: 0;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
   }
 
-  /* CARDS */
+  /* PROPERTY CARDS GRID */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px; margin-bottom: 32px;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
   }
+
   .card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); overflow: hidden; cursor: pointer;
-    transition: box-shadow 0.2s ease, border-color 0.2s ease;
-    text-decoration: none; color: inherit; display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
   }
-  .card:hover { box-shadow: var(--shadow-lg); border-color: var(--border-strong); }
+  .card:hover {
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
   .card-photo {
-    height: 160px; background: var(--surface-2); position: relative;
-    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    position: relative;
+    aspect-ratio: 16/10;
+    background: var(--surface-2);
+    overflow: hidden;
   }
   .card-photo-empty {
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    color: var(--muted-2); font-size: 12px;
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 8px;
+    color: var(--muted-2);
+    background-image: linear-gradient(135deg, var(--surface-2) 0%, var(--bg) 100%);
   }
-  .card-photo-empty svg { width: 28px; height: 28px; }
-  .card-photo-tag {
-    position: absolute; top: 10px; right: 10px;
-    padding: 4px 10px; border-radius: 100px;
-    font-size: 11px; font-weight: 600; backdrop-filter: blur(8px);
+  .card-photo-empty svg {
+    width: 28px; height: 28px;
+    opacity: 0.4;
   }
-  .card-photo-tag.progress { background: var(--money-soft); color: var(--status-progress); }
-  .card-photo-tag.soon { background: rgba(37,99,235,0.1); color: var(--status-soon); }
-  .card-photo-tag.watch { background: var(--surface-2); color: var(--muted); }
+  .card-photo-empty span {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
   .card-photo-count {
-    position: absolute; bottom: 10px; right: 10px;
-    background: rgba(10,10,10,0.6); color: #fff;
-    padding: 3px 8px; border-radius: 100px;
-    font-size: 11px; font-weight: 500; z-index: 2;
+    position: absolute;
+    bottom: 10px; right: 10px;
+    background: rgba(10,10,10,0.78);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
   }
-  .card-body { padding: 16px; }
-  .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
-  .card-title { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
-  .card-locale { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .card-score {
-    font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600;
-    background: var(--surface-2); padding: 3px 8px; border-radius: 6px;
-    white-space: nowrap; flex-shrink: 0;
-  }
-  .card-specs { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-bottom: 10px; }
-  .card-money {
-    padding-top: 10px; border-top: 1px solid var(--border);
-    display: flex; align-items: baseline; justify-content: space-between;
-  }
-  .card-spread { font-size: 18px; font-weight: 700; color: var(--money); letter-spacing: -0.015em; }
-  .card-ask { font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); }
-
-  .card-hoa {
-    display: flex; align-items: center; gap: 7px;
-    font-size: 12px; font-weight: 500;
-    padding: 6px 10px; border-radius: 6px;
-    margin-top: 8px;
-  }
-  .card-hoa::before { content: 'HOA'; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; opacity: 0.7; }
-  .card-hoa.none { background: var(--money-soft); color: var(--money); }
-  .card-hoa.low { background: var(--money-soft); color: var(--money); }
-  .card-hoa.high { background: var(--warn-soft); color: var(--warn); }
-  .card-hoa.danger { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
-  .card-hoa.unknown { background: var(--surface-2); color: var(--muted); }
-
-  /* ── YAY / NAY ── */
-  .card-verdict {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-    margin-top: 10px; padding-top: 10px;
-    border-top: 1px solid var(--border);
-  }
-  .verdict-btn {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 10px 8px; border-radius: var(--radius-sm);
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    border: 1.5px solid transparent; transition: all 0.15s ease;
-    background: none; font-family: 'Geist', sans-serif;
-    -webkit-tap-highlight-color: transparent;
-  }
-  .verdict-btn.yay { border-color: var(--money); color: var(--money); }
-  .verdict-btn.yay:hover, .verdict-btn.yay.active { background: var(--money); color: #fff; }
-  .verdict-btn.nay { border-color: var(--border-strong); color: var(--muted); }
-  .verdict-btn.nay:hover { border-color: var(--danger); color: var(--danger); }
-  .verdict-btn.nay.active { background: var(--danger); color: #fff; border-color: var(--danger); }
-
-  .card[data-verdict="nay"] {
-    opacity: 0.35; filter: grayscale(0.6);
-    transition: opacity 0.3s, filter 0.3s;
-  }
-  .card[data-verdict="yay"] { border-color: var(--money) !important; }
-
-  .passed-bar {
-    display: none; align-items: center; justify-content: space-between;
-    padding: 10px 14px; background: var(--surface-2);
-    border-radius: var(--radius-sm); margin-bottom: 16px;
-    font-size: 13px; color: var(--muted);
-  }
-  .passed-bar.visible { display: flex; }
-  .passed-bar button {
-    font-size: 12px; font-weight: 600; background: none; border: none;
-    color: var(--ink); cursor: pointer; text-decoration: underline;
+  .card-photo-tag {
+    position: absolute;
+    top: 10px; left: 10px;
+    padding: 4px 9px;
+    border-radius: 4px;
     font-family: 'Geist', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    backdrop-filter: blur(8px);
   }
+  .card-photo-tag.progress { background: rgba(0,168,107,0.95); color: #fff; }
+  .card-photo-tag.soon { background: rgba(37,99,235,0.95); color: #fff; }
+  .card-photo-tag.watch { background: rgba(255,255,255,0.95); color: var(--ink); }
 
-  /* MAPS LINK — address that opens Google Maps directions */
-  .maps-link {
-    display: inline-flex; align-items: center; gap: 5px;
-    color: inherit; text-decoration: none;
-    border-bottom: 1px dashed var(--border-strong);
-    transition: border-color 0.15s, color 0.15s;
-    cursor: pointer;
+  .card-body {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
-  .maps-link:hover { color: var(--accent); border-color: var(--accent); }
-  .maps-link svg { width: 13px; height: 13px; flex-shrink: 0; opacity: 0.5; }
-  .maps-link:hover svg { opacity: 1; }
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .card-locale {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .card-score {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .card-specs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .card-specs span::after {
+    content: '·';
+    margin-left: 10px;
+    color: var(--border-strong);
+  }
+  .card-specs span:last-child::after { content: ''; margin-left: 0; }
+  .card-money {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+  .card-spread {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--money);
+    letter-spacing: -0.015em;
+  }
+  .card-ask {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
 
   .empty-state {
-    text-align: center; padding: 72px 24px;
-    border: 1px dashed var(--border-strong); border-radius: var(--radius); background: var(--surface);
+    text-align: center;
+    padding: 72px 24px;
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
   }
   .empty-state svg { width: 36px; height: 36px; color: var(--muted-2); margin: 0 auto 12px; display: block; }
   .empty-state h3 {
-    font-family: 'Instrument Serif', serif; font-style: italic;
-    font-weight: 400; font-size: 22px; margin-bottom: 4px;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    margin-bottom: 4px;
   }
   .empty-state p { font-size: 13px; color: var(--muted); }
 
-  /* PROPERTY DETAIL */
+  /* ====== PROPERTY DETAIL ====== */
   .back-link {
     display: inline-flex; align-items: center; gap: 6px;
-    font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--muted);
-    margin-bottom: 24px; cursor: pointer; border: none; background: none; padding: 0;
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
     transition: color 0.15s;
   }
   .back-link:hover { color: var(--ink); }
   .back-link svg { width: 14px; height: 14px; }
 
-  .prop { display: grid; grid-template-columns: 1fr; gap: 32px; }
-  @media (min-width: 940px) { .prop { grid-template-columns: 1.15fr 1fr; gap: 48px; } }
+  .prop {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 940px) {
+    .prop { grid-template-columns: 1.15fr 1fr; gap: 48px; }
+  }
 
-  .prop-header { grid-column: 1 / -1; margin-bottom: 8px; }
-  .prop-status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .prop-header {
+    grid-column: 1 / -1;
+    margin-bottom: 8px;
+  }
+  .prop-status-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 12px;
+  }
   .status-pill {
     display: inline-flex; align-items: center; gap: 7px;
-    padding: 5px 11px; border-radius: 100px;
-    font-size: 12px; font-weight: 600; letter-spacing: -0.005em;
+    padding: 5px 11px;
+    border-radius: 100px;
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
   }
-  .status-pill .pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .status-pill .pill-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
   .status-pill.progress { background: var(--money-soft); color: var(--status-progress); }
   .status-pill.progress .pill-dot { background: var(--status-progress); animation: pulse 2s infinite; }
   .status-pill.soon { background: rgba(37,99,235,0.08); color: var(--status-soon); }
   .status-pill.soon .pill-dot { background: var(--status-soon); }
   .status-pill.watch { background: var(--surface-2); color: var(--muted); }
   .status-pill.watch .pill-dot { background: var(--status-watch); }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
 
   .prop-tag {
-    padding: 4px 10px; border-radius: 100px;
-    font-size: 11px; font-weight: 500; background: var(--surface-2); color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--surface-2);
+    color: var(--muted);
   }
   .prop-tag.warn { background: var(--warn-soft); color: var(--warn); }
   .prop-tag.danger { background: var(--danger-soft); color: var(--danger); }
   .prop-tag.accent { background: var(--accent-soft); color: var(--accent); }
 
-  .prop-header h2 {
-    font-family: 'Instrument Serif', serif; font-weight: 400;
-    font-size: clamp(32px, 5vw, 48px); line-height: 1.05;
-    letter-spacing: -0.025em; margin-bottom: 8px;
-  }
-  .prop-locale { font-size: 15px; color: var(--muted); }
-
-  /* DRIVE NOTES */
+  /* ====== DRIVE NOTES PAD ====== */
   .notes-pad {
-    margin-top: 32px; padding: 24px 24px 8px;
-    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    margin-top: 32px;
+    padding: 24px 24px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
   }
   .notes-pad-head {
     display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
-    gap: 12px; flex-wrap: wrap;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+    flex-wrap: wrap;
   }
   .notes-pad-head h3 {
-    font-family: 'Instrument Serif', serif; font-weight: 400;
-    font-size: 22px; letter-spacing: -0.01em;
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: -0.01em;
   }
-  .notes-pad-head .notes-meta { font-size: 12px; color: var(--muted); }
-  .notes-pad-actions { display: flex; gap: 8px; }
+  .notes-pad-head .notes-meta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .notes-pad-actions {
+    display: flex; gap: 8px;
+  }
   .notes-btn {
-    padding: 6px 12px; background: transparent;
-    border: 1px solid var(--border); border-radius: 100px;
-    font-family: inherit; font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.15s;
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-family: inherit;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
   }
-  .notes-btn:hover { color: var(--ink); border-color: var(--border-strong); }
+  .notes-btn:hover {
+    color: var(--ink);
+    border-color: var(--border-strong);
+  }
+  .notes-rows { }
   .notes-row {
-    display: grid; grid-template-columns: 36px 1fr; gap: 14px;
-    align-items: center; padding: 10px 0;
-    border-bottom: 1px dashed var(--border); min-height: 44px;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+    min-height: 44px;
   }
   .notes-row:last-child { border-bottom: none; }
   .notes-num {
-    font-family: 'Instrument Serif', serif; font-size: 22px;
-    color: var(--muted); text-align: center; line-height: 1;
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1;
   }
   .notes-input {
-    width: 100%; border: none; background: transparent;
-    font-family: inherit; font-size: 15px; color: var(--ink);
-    padding: 6px 4px; outline: none;
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    padding: 6px 4px;
+    outline: none;
   }
-  .notes-input::placeholder { color: var(--border-strong); font-style: italic; }
-  .notes-input:focus { background: var(--surface-2); border-radius: 4px; }
+  .notes-input::placeholder {
+    color: var(--border-strong);
+    font-style: italic;
+  }
+  .notes-input:focus {
+    background: var(--surface-2);
+    border-radius: 4px;
+  }
 
   @media print {
     .notes-pad { break-inside: avoid; }
     .notes-pad-actions { display: none; }
     .notes-input { border-bottom: 1px solid #000; }
   }
+  .prop-header h2 {
+    font-family: 'Instrument Serif', serif;
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 48px);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 8px;
+  }
+  .prop-locale {
+    font-size: 15px;
+    color: var(--muted);
+  }
 
-  /* CAROUSEL */
-  .photo-col { display: flex; flex-direction: column; }
+  /* ====== CAROUSEL ====== */
+  .photo-col { }
   .carousel {
-    position: relative; border-radius: var(--radius);
-    overflow: hidden; background: var(--surface-2); margin-bottom: 12px; aspect-ratio: 4/3;
+    position: relative;
+    aspect-ratio: 4/3;
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
   }
   .carousel-track {
-    display: flex; height: 100%;
-    overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    display: flex;
+    width: 100%; height: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
   }
   .carousel-track::-webkit-scrollbar { display: none; }
   .carousel-slide {
-    min-width: 100%; height: 100%; scroll-snap-align: start;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px; color: var(--muted-2); font-size: 12px; position: relative; background: var(--surface-2);
+    flex: 0 0 100%;
+    width: 100%; height: 100%;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2);
   }
-  .carousel-slide.empty svg { width: 36px; height: 36px; margin-bottom: 4px; }
+  .carousel-slide img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+  .carousel-slide.empty {
+    flex-direction: column;
+    gap: 10px;
+    color: var(--muted-2);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+    padding: 24px;
+    background:
+      linear-gradient(135deg, var(--surface-2) 0%, var(--bg) 100%);
+  }
+  .carousel-slide.empty svg {
+    width: 32px; height: 32px;
+    opacity: 0.35;
+  }
   .carousel-slide-label {
-    position: absolute; bottom: 10px; left: 12px;
-    font-family: 'Geist Mono', monospace; font-size: 10px;
-    background: rgba(10,10,10,0.5); color: #fff; padding: 3px 8px; border-radius: 4px;
+    position: absolute;
+    bottom: 12px; left: 12px;
+    background: rgba(10,10,10,0.78);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
   }
+
   .carousel-arrow {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    width: 36px; height: 36px; border-radius: 50%;
-    background: rgba(255,255,255,0.9); border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; z-index: 3; transition: background 0.15s;
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 3;
+    transition: all 0.15s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-sm);
   }
-  .carousel-arrow:disabled { opacity: 0.3; cursor: default; }
-  .carousel-arrow.prev { left: 10px; }
-  .carousel-arrow.next { right: 10px; }
+  .carousel-arrow:hover:not(:disabled) {
+    background: var(--ink);
+    color: #fff;
+    border-color: var(--ink);
+  }
+  .carousel-arrow.prev { left: 12px; }
+  .carousel-arrow.next { right: 12px; }
   .carousel-arrow svg { width: 16px; height: 16px; }
+  .carousel-arrow:disabled { opacity: 0.3; cursor: default; }
+
   .carousel-counter {
-    position: absolute; bottom: 10px; right: 12px;
-    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 500;
-    background: rgba(10,10,10,0.5); color: #fff; padding: 3px 8px; border-radius: 4px; z-index: 2;
+    position: absolute;
+    top: 12px; right: 12px;
+    background: rgba(10,10,10,0.78);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    z-index: 2;
   }
   .carousel-score {
-    position: absolute; top: 12px; left: 12px;
-    background: rgba(255,255,255,0.95); padding: 5px 10px;
-    font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600;
-    border-radius: 6px; z-index: 2;
+    position: absolute;
+    top: 12px; left: 12px;
+    background: rgba(255,255,255,0.95);
+    padding: 5px 10px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ink);
+    border-radius: 6px;
+    z-index: 2;
+    backdrop-filter: blur(8px);
   }
   .carousel-score.hot { background: var(--accent); color: #fff; }
-  .carousel-dots { display: flex; gap: 5px; justify-content: center; margin-bottom: 14px; }
-  .carousel-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--border-strong); cursor: pointer; transition: all 0.2s; border: none; padding: 0;
+
+  .carousel-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 14px;
   }
-  .carousel-dot.active { background: var(--ink); width: 22px; border-radius: 4px; }
+  .carousel-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--border-strong);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    padding: 0;
+  }
+  .carousel-dot.active {
+    background: var(--ink);
+    width: 22px;
+    border-radius: 4px;
+  }
+
   .photo-caption {
-    font-family: 'Instrument Serif', serif; font-style: italic;
-    font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.5;
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    line-height: 1.5;
   }
   .photo-add-note {
     display: flex; gap: 10px; align-items: center;
-    padding: 10px 14px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius-sm);
-    font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted);
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
   }
   .photo-add-note strong { color: var(--ink); font-weight: 600; }
 
-  /* DATA COLUMN */
+  /* ====== DATA COLUMN ====== */
   .data-col { display: flex; flex-direction: column; gap: 24px; }
-  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
-  .panel-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-  .panel-head h4 { font-size: 13px; font-weight: 600; letter-spacing: -0.005em; }
-  .panel-head .panel-sub { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 13px; color: var(--muted); }
 
-  .price-row { display: flex; align-items: baseline; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .panel-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .panel-head h4 {
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+  }
+  .panel-head .panel-sub {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* MONEY PANEL */
+  .price-row {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
   .price-row:last-of-type { border-bottom: none; }
-  .price-label { font-size: 13px; color: var(--muted); }
-  .price-val { font-family: 'Geist Mono', monospace; font-size: 14px; font-weight: 500; }
-  .price-row.feature { margin-top: 8px; padding: 14px 16px; background: var(--money-soft); border-radius: var(--radius-sm); border-bottom: none; }
-  .price-row.feature .price-label { font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .price-row.feature .price-val { font-family: 'Instrument Serif', serif; font-size: 28px; font-weight: 400; color: var(--money); letter-spacing: -0.02em; }
-  .price-note { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 14px; line-height: 1.5; color: var(--ink-2); margin-top: 12px; padding: 10px 14px; background: var(--surface-2); border-radius: var(--radius-sm); border-left: 2px solid var(--accent); }
+  .price-label {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .price-val {
+    font-family: 'Geist Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .price-row.feature {
+    margin-top: 8px;
+    padding: 14px 16px;
+    background: var(--money-soft);
+    border-radius: var(--radius-sm);
+    border-bottom: none;
+  }
+  .price-row.feature .price-label {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .price-row.feature .price-val {
+    font-family: 'Instrument Serif', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--money);
+    letter-spacing: -0.02em;
+  }
+  .price-note {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    border-left: 2px solid var(--accent);
+  }
 
-  .specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-radius: var(--radius-sm); overflow: hidden; }
-  .spec { background: var(--surface); padding: 12px 14px; }
-  .spec-l { font-family: 'Geist Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
-  .spec-v { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  /* SPECS */
+  .specs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .spec {
+    background: var(--surface);
+    padding: 12px 14px;
+  }
+  .spec-l {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .spec-v {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
   .spec-v .ok { color: var(--money); }
   .spec-v .warn { color: var(--warn); }
   .spec-v .danger { color: var(--danger); }
   .spec-v .small { font-size: 12px; font-weight: 500; }
 
-  .comps-table { width: 100%; border-collapse: collapse; }
-  .comps-table th, .comps-table td { text-align: left; padding: 10px 0; border-bottom: 1px solid var(--border); }
+  /* COMPS TABLE */
+  .comps-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .comps-table th, .comps-table td {
+    text-align: left;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
   .comps-table tr:last-child td { border-bottom: none; }
-  .comps-table th { font-family: 'Geist Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 500; }
-  .comps-table td { font-size: 13px; color: var(--ink-2); }
-  .comps-table td.num { font-family: 'Geist Mono', monospace; text-align: right; font-weight: 500; color: var(--ink); }
-  .comps-table td.range { font-family: 'Instrument Serif', serif; font-size: 18px; font-weight: 400; color: var(--money); text-align: right; letter-spacing: -0.01em; }
+  .comps-table th {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .comps-table td {
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .comps-table td.num {
+    font-family: 'Geist Mono', monospace;
+    text-align: right;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .comps-table td.range {
+    font-family: 'Instrument Serif', serif;
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--money);
+    text-align: right;
+    letter-spacing: -0.01em;
+  }
 
-  .lien-status { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
-  .ls-btn { padding: 11px 8px; border: 1px solid var(--border); background: var(--surface); border-radius: var(--radius-sm); font-family: 'Geist', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); transition: all 0.15s ease; text-align: center; }
+  /* LIEN */
+  .lien-status {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .ls-btn {
+    padding: 11px 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: var(--radius-sm);
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s ease;
+    text-align: center;
+  }
   .ls-btn:hover { color: var(--ink); border-color: var(--border-strong); }
   .ls-btn.active.unchecked { background: var(--ink); color: #fff; border-color: var(--ink); }
   .ls-btn.active.clean { background: var(--money); color: #fff; border-color: var(--money); }
   .ls-btn.active.issue { background: var(--danger); color: #fff; border-color: var(--danger); }
-  .lien-search-link { display: block; padding: 10px 14px; background: var(--surface-2); border-radius: var(--radius-sm); font-family: 'Geist Mono', monospace; font-size: 12px; text-decoration: none; color: var(--ink); text-align: center; transition: all 0.15s; }
+  .lien-search-link {
+    display: block;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--ink);
+    text-align: center;
+    transition: all 0.15s;
+  }
   .lien-search-link:hover { background: var(--ink); color: #fff; }
   .lien-search-link strong { color: var(--accent); }
   .lien-search-link:hover strong { color: var(--accent-soft); }
 
-  .warning { padding: 14px 16px; background: var(--warn-soft); border-radius: var(--radius-sm); border-left: 3px solid var(--warn); }
-  .warning.danger { background: var(--danger-soft); border-left-color: var(--danger); }
-  .warning h5 { font-size: 12px; font-weight: 600; color: var(--warn); margin-bottom: 4px; }
+  /* WARNINGS */
+  .warning {
+    padding: 14px 16px;
+    background: var(--warn-soft);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--warn);
+  }
+  .warning.danger {
+    background: var(--danger-soft);
+    border-left-color: var(--danger);
+  }
+  .warning h5 {
+    font-family: 'Geist', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--warn);
+    margin-bottom: 4px;
+  }
   .warning.danger h5 { color: var(--danger); }
-  .warning p { font-size: 13px; line-height: 1.55; color: var(--ink-2); }
+  .warning p {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
   .warning b { color: var(--ink); font-weight: 600; }
 
-  .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* ACTIONS */
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
   @media (max-width: 600px) { .actions { grid-template-columns: 1fr; } }
-  .action { padding: 12px 16px; border-radius: var(--radius-sm); text-decoration: none; font-size: 13px; font-weight: 500; text-align: center; transition: all 0.15s ease; border: 1px solid transparent; }
+  .action {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-family: 'Geist', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.15s ease;
+    border: 1px solid transparent;
+  }
   .action.primary { background: var(--ink); color: #fff; }
   .action.primary:hover { background: var(--accent); }
   .action.secondary { background: var(--surface); color: var(--ink); border-color: var(--border); }
   .action.secondary:hover { border-color: var(--ink); }
   .action.danger { background: var(--surface); color: var(--danger); border-color: var(--danger-soft); }
-  .action.danger:hover { background: var(--danger); color: #fff; }
+  .action.danger:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-  .check { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+  /* CHECKLIST */
+  .check {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+  }
   .check:last-child { border-bottom: none; }
-  .check-box { width: 18px; height: 18px; border: 1.5px solid var(--border-strong); border-radius: 5px; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.15s ease; }
-  .check.done .check-box { background: var(--money); border-color: var(--money); }
-  .check.done .check-box::after { content: ''; width: 5px; height: 9px; border-right: 2px solid #fff; border-bottom: 2px solid #fff; transform: rotate(45deg) translate(-1px, -1px); }
-  .check-txt { font-size: 14px; line-height: 1.45; color: var(--ink-2); }
-  .check.done .check-txt { color: var(--muted); text-decoration: line-through; }
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .check.done .check-box {
+    background: var(--money);
+    border-color: var(--money);
+  }
+  .check.done .check-box::after {
+    content: '';
+    width: 5px; height: 9px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+  .check-txt {
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .check.done .check-txt {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
 
   /* LIEN PROTOCOL PAGE */
-  .liens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 32px; }
-  .lien-card { padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
-  .lien-card h5 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-  .lien-card .search-term { font-family: 'Geist Mono', monospace; font-size: 12px; color: var(--accent); background: var(--accent-soft); padding: 5px 9px; border-radius: 4px; display: inline-block; margin-top: 6px; }
-  .lien-howto { background: var(--surface); border: 1px solid var(--border); padding: 28px; border-radius: var(--radius); margin-bottom: 20px; }
-  .lien-howto h4 { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; font-size: 24px; margin-bottom: 18px; letter-spacing: -0.02em; }
-  .lien-step { display: grid; grid-template-columns: 28px 1fr; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); align-items: start; }
+  .liens-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .lien-card {
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+  }
+  .lien-card h5 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .lien-card .search-term {
+    font-family: 'Geist Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 9px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 6px;
+  }
+  .lien-howto {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+  }
+  .lien-howto h4 {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 24px;
+    margin-bottom: 18px;
+    letter-spacing: -0.02em;
+  }
+  .lien-step {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
   .lien-step:last-of-type { border-bottom: none; }
-  .lien-step-n { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--accent); line-height: 1; }
+  .lien-step-n {
+    font-family: 'Instrument Serif', serif;
+    font-size: 22px;
+    color: var(--accent);
+    line-height: 1;
+  }
   .lien-step p { font-size: 14px; line-height: 1.55; color: var(--ink-2); }
   .lien-step b { color: var(--ink); font-weight: 600; }
-  .lien-key { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
-  .key-item { padding: 12px 14px; border-radius: var(--radius-sm); display: flex; gap: 10px; align-items: flex-start; }
-  .key-item .dot-color { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .lien-key {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .key-item {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .key-item .dot-color {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0; margin-top: 4px;
+  }
   .key-clean { background: var(--money-soft); }
   .key-clean .dot-color { background: var(--money); }
   .key-yellow { background: var(--warn-soft); }
@@ -538,63 +1118,153 @@
   .key-red .dot-color { background: var(--danger); }
   .key-item p { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
   .key-item b { color: var(--ink); font-weight: 600; }
-  .other-checks { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+  .other-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px;
+  }
 
-  footer { border-top: 1px solid var(--border); margin-top: 48px; padding: 24px 0 32px; font-family: 'Geist Mono', monospace; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+    padding: 24px 0 32px;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* HOA BADGE */
+  .card-hoa {
+    font-size: 11px; font-weight: 500; font-family: 'Geist Mono', monospace;
+    padding: 5px 10px; border-radius: 6px; margin-top: 8px;
+    display: flex; gap: 6px; align-items: center;
+  }
+  .card-hoa::before { content: 'HOA ·'; opacity: 0.6; }
+  .card-hoa.none    { background: var(--money-soft); color: var(--money); }
+  .card-hoa.low     { background: var(--money-soft); color: var(--money); }
+  .card-hoa.high    { background: var(--warn-soft);  color: var(--warn); }
+  .card-hoa.risk    { background: var(--danger-soft); color: var(--danger); font-weight: 700; }
+  .card-hoa.unknown { background: var(--surface-2); color: var(--muted); }
+
+  /* NAVIGATE BUTTON */
+  .card-nav {
+    display: block; text-align: center; text-decoration: none;
+    margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm);
+    background: var(--ink); color: #fff;
+    font-size: 13px; font-weight: 600; font-family: 'Geist', sans-serif;
+    transition: background 0.15s;
+  }
+  .card-nav:hover { background: var(--accent); }
+
+  /* PURSUE / PASS */
+  .card-verdict {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+    margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border);
+  }
+  .verdict-btn {
+    padding: 9px 8px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    border: 1.5px solid transparent; background: none;
+    font-family: 'Geist', sans-serif; transition: all 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .verdict-btn.yay { border-color: var(--money); color: var(--money); }
+  .verdict-btn.yay:hover, .verdict-btn.yay.active { background: var(--money); color: #fff; }
+  .verdict-btn.nay { border-color: var(--border-strong); color: var(--muted); }
+  .verdict-btn.nay:hover { border-color: var(--danger); color: var(--danger); }
+  .verdict-btn.nay.active { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .card[data-verdict="nay"] { opacity: 0.3; filter: grayscale(0.7); }
+  .card[data-verdict="yay"] { outline: 2px solid var(--money); outline-offset: 2px; }
+
+  /* PASSED BAR */
+  .passed-bar {
+    display: none; align-items: center; justify-content: space-between;
+    padding: 9px 14px; background: var(--surface-2); border-radius: var(--radius-sm);
+    margin-bottom: 16px; font-size: 13px; color: var(--muted);
+  }
+  .passed-bar.visible { display: flex; }
+  .passed-bar button {
+    font-size: 12px; font-weight: 600; background: none; border: none;
+    color: var(--ink); cursor: pointer; text-decoration: underline;
+    font-family: 'Geist', sans-serif;
+  }
+  .hide-passed .card[data-verdict="nay"] { display: none; }
+  .auction-channel-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+  .auction-channel-card .ach-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .auction-channel-card .ach-meta { font-size: 12px; color: var(--muted); }
+  .auction-channel-card .ach-action { font-size: 13px; font-weight: 600; color: var(--accent); text-decoration: none; }
+  .auction-channel-card .ach-action:hover { text-decoration: underline; }
+  .market-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; display: flex; flex-direction: column; cursor: default; transition: box-shadow 0.15s; }
+  .market-card:hover { box-shadow: var(--shadow-md); }
+  .market-card-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+  .market-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; font-family: 'Geist Mono', monospace; padding: 3px 8px; border-radius: var(--radius-xs); background: var(--accent-soft); color: var(--accent); }
+  .market-title { font-size: 17px; font-weight: 700; letter-spacing: -0.02em; }
+  .market-sub { font-size: 12px; color: var(--muted); }
+  .market-stats { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+  .market-stat { font-size: 12px; font-family: 'Geist Mono', monospace; color: var(--muted-2); }
+  .market-stat strong { color: var(--ink); font-weight: 600; }
+  .market-note { font-size: 12px; color: var(--muted); line-height: 1.5; padding-top: 6px; border-top: 1px solid var(--border); }
+  .market-search { display: block; text-align: center; text-decoration: none; margin-top: 10px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--ink); color: #fff; font-size: 13px; font-weight: 600; font-family: 'Geist', sans-serif; transition: background 0.15s; }
+  .market-search:hover { background: var(--accent); }
 </style>
 </head>
 <body>
 
 <div class="app">
 
-  <!-- TOP BAR -->
+  <!-- ============ TOP BAR ============ -->
   <div class="topbar">
     <div class="brand">
       <div class="brand-mark"></div>
       <span>Pipeline · Field Sheet</span>
     </div>
     <div class="topbar-meta">
-      <span><span class="live-dot"></span>Live · auto-saved</span>
-      <span>v 03</span>
+      <span><span class="dot"></span>Live · auto-saved</span>
+      <span>v 02</span>
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- ============ HEADER ============ -->
   <header class="header">
     <div class="header-eyebrow">Property Pipeline · Florida +</div>
     <h1>Fresh sweep, ranked by <em>spread</em>.</h1>
-    <p class="header-sub">Bank-owned foreclosures, ARV-modeled, comps-supported. Tap any address to open Google Maps directions. Filter by auction status, run the lien check before any offer.</p>
+    <p class="header-sub">Bank-owned foreclosures, ARV-modeled, comps-supported. Tap Navigate on any card to open directions. Mark Pursue or Pass as you go — decisions save to your phone.</p>
   </header>
 
-  <!-- STAT STRIP -->
+  <!-- ============ STAT STRIP ============ -->
   <div class="stat-strip">
-    <div class="stat-cell"><div class="l">Properties</div><div class="v" id="stat-count">—</div></div>
-    <div class="stat-cell"><div class="l">Combined Spread</div><div class="v money" id="stat-spread">—</div></div>
-    <div class="stat-cell"><div class="l">In Progress</div><div class="v" id="stat-progress">—</div></div>
-    <div class="stat-cell"><div class="l">Watching</div><div class="v" id="stat-watch">—</div></div>
+    <div class="stat-cell"><div class="l">Properties</div><div class="v">20+</div></div>
+    <div class="stat-cell"><div class="l">Best Spread</div><div class="v money">$100k+</div></div>
+    <div class="stat-cell"><div class="l">In Progress</div><div class="v">12</div></div>
+    <div class="stat-cell"><div class="l">Auction Queue</div><div class="v">6</div></div>
   </div>
 
-  <!-- TABS -->
+  <!-- ============ TABS ============ -->
   <div class="tabs-wrap">
     <nav class="tabs">
       <button class="tab active" onclick="show('progress', this)">
         <span class="tab-status-dot progress"></span>
-        Auction in Progress
-        <span class="tab-count" id="count-progress">0</span>
+        Active Listings
+        <span class="tab-count">12</span>
       </button>
       <button class="tab" onclick="show('soon', this)">
         <span class="tab-status-dot soon"></span>
-        Auction Soon
-        <span class="tab-count" id="count-soon">0</span>
+        Auction Queue
+        <span class="tab-count">6</span>
       </button>
       <button class="tab" onclick="show('watch', this)">
         <span class="tab-status-dot watch"></span>
-        Homes to Watch
-        <span class="tab-count" id="count-watch">0</span>
+        Watchlist
+        <span class="tab-count">5</span>
       </button>
       <button class="tab" onclick="show('flight', this)">
         ✈ Worth a Flight
-        <span class="tab-count" id="count-flight">0</span>
+        <span class="tab-count">4</span>
       </button>
       <button class="tab" onclick="show('liens', this)">
         Lien Protocol
@@ -602,25 +1272,25 @@
     </nav>
   </div>
 
-  <!-- AUCTION IN PROGRESS -->
+  <!-- ============ ACTIVE LISTINGS ============ -->
   <section id="page-progress" class="page active">
     <div class="list-intro">
       <div>
-        <h2>Auction in progress</h2>
-        <p>Active foreclosure listings — offer windows are open. Move fast, but verify liens before bidding.</p>
+        <h2>Active listings</h2>
+        <p>Verified active on Zillow. Tap Navigate to get directions. Mark Pursue or Pass as you go.</p>
       </div>
-      <div class="list-intro-count" id="intro-count-progress">—</div>
+      <div class="list-intro-count">12 properties</div>
     </div>
     <div class="passed-bar" id="passed-bar-progress">
       <span id="passed-label-progress"></span>
       <button onclick="togglePassed('progress')">Show passed</button>
     </div>
-    <div class="cards" id="cards-progress">
 
-      <!-- 🔴 URGENT — closes April 28 -->
-      <a class="card" href="https://www.auction.com/details/21019-sunpoint-way-lutz-fl-2040816" target="_blank" style="border:2px solid var(--accent)">
+    <div class="cards">
+
+      <a class="card" href="https://www.auction.com/details/21019-sunpoint-way-lutz-fl-2040816" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress" style="background:var(--accent)">⚡ BUY SIGNAL — Closes Apr 28</span>
+          <span class="card-photo-tag progress">⚡ BUY SIGNAL — Closes Apr 28</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Auction.com →</span>
@@ -632,25 +1302,21 @@
               <div class="card-title">21019 Sunpoint Way #201</div>
               <div class="card-locale">Lutz, FL 33558 · Hillsborough</div>
             </div>
-            <span class="card-score" style="background:var(--accent);color:#fff">25/30</span>
+            <span class="card-score">25/30</span>
           </div>
           <div class="card-specs"><span>3 bd / 2 ba</span><span>2,155 sqft</span><span>Built 2007</span></div>
           <div class="card-money">
             <div class="card-spread">+$100k+ spread</div>
             <div class="card-ask">Opening bid $65,000 · EMV $200,212</div>
           </div>
-          <div class="card-hoa high">$398/mo — verify what's included before bidding</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=21019+Sunpoint+Way+Lutz+FL+33558" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/21019+Sunpoint+Way+Lutz+FL+33558" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa high">$398/mo — verify what's included</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=21019+Sunpoint+Way+Lutz+FL+33558" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- BUY SIGNAL: Best value in pull -->
-      <a class="card" href="https://www.zillow.com/homedetails/119-W-7th-St-Lakeland-FL-33805/55126755_zpid/" target="_blank" style="border:2px solid var(--money)">
+      <a class="card" href="https://www.zillow.com/homedetails/119-W-7th-St-Lakeland-FL-33805/55126755_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress" style="background:var(--money)">⭐ BUY SIGNAL — Best Value</span>
+          <span class="card-photo-tag progress">⭐ Best Value</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -662,25 +1328,21 @@
               <div class="card-title">119 W 7th St</div>
               <div class="card-locale">Lakeland, FL 33805 · Polk</div>
             </div>
-            <span class="card-score" style="background:var(--money);color:#fff">25/30</span>
+            <span class="card-score">25/30</span>
           </div>
-          <div class="card-specs"><span>2 bd / 2 ba</span><span>928 sqft</span><span>$113/sqft</span></div>
+          <div class="card-specs"><span>2 bd / 2 ba</span><span>928 sqft</span><span>Area avg $233k</span></div>
           <div class="card-money">
             <div class="card-spread">+$80–100k spread</div>
-            <div class="card-ask">Ask $105,000 · Area avg $233k</div>
+            <div class="card-ask">Ask $105,000</div>
           </div>
           <div class="card-hoa none">None — SFH foreclosure</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=119+W+7th+St+Lakeland+FL+33805" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/119+W+7th+St+Lakeland+FL+33805" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=119+W+7th+St+Lakeland+FL+33805" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- BUY SIGNAL: HUD clean title -->
-      <a class="card" href="https://www.hudhousing.org/properties/hud/093-602712/4625-oak-hill-ter-sarasota-fl-34232" target="_blank" style="border:2px solid var(--money)">
+      <a class="card" href="https://www.hudhousing.org/properties/hud/093-602712/4625-oak-hill-ter-sarasota-fl-34232" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress" style="background:var(--money)">⭐ BUY SIGNAL — HUD Clean Title</span>
+          <span class="card-photo-tag progress">⭐ HUD Clean Title</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View HUD Listing →</span>
@@ -692,7 +1354,7 @@
               <div class="card-title">4625 Oak Hill Ter</div>
               <div class="card-locale">Sarasota, FL 34232 · HUD REO</div>
             </div>
-            <span class="card-score" style="background:var(--money);color:#fff">26/30</span>
+            <span class="card-score">26/30</span>
           </div>
           <div class="card-specs"><span>2 bd / 2 ba</span><span>1,056 sqft</span><span>Bee Ridge area</span></div>
           <div class="card-money">
@@ -700,17 +1362,13 @@
             <div class="card-ask">Ask $180,000 · Case #093-602712</div>
           </div>
           <div class="card-hoa unknown">Unknown — verify with HUD listing</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=4625+Oak+Hill+Ter+Sarasota+FL+34232" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/4625+Oak+Hill+Ter+Sarasota+FL+34232" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=4625+Oak+Hill+Ter+Sarasota+FL+34232" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- BUY SIGNAL: big rehab play -->
-      <a class="card" href="https://propertyonion.com/property_search/properties/250-Douglas-Rd-W-oldsmar-FL-34677/280052" target="_blank" style="border:2px solid var(--money)">
+      <a class="card" href="https://propertyonion.com/property_search/properties/250-Douglas-Rd-W-oldsmar-FL-34677/280052" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress" style="background:var(--money)">⭐ BUY SIGNAL — Rehab Play</span>
+          <span class="card-photo-tag progress">⭐ Big Rehab Play</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View Listing →</span>
@@ -722,7 +1380,7 @@
               <div class="card-title">250 Douglas Rd W</div>
               <div class="card-locale">Oldsmar, FL 34677 · Pinellas</div>
             </div>
-            <span class="card-score" style="background:var(--money);color:#fff">23/30</span>
+            <span class="card-score">23/30</span>
           </div>
           <div class="card-specs"><span>3 bd / 3 ba</span><span>2,270+ sqft</span><span>Full rehab</span></div>
           <div class="card-money">
@@ -730,18 +1388,13 @@
             <div class="card-ask">Ask $109,200 · Needs full renovation</div>
           </div>
           <div class="card-hoa unknown">Unknown — verify before offer</div>
-          <div style="font-size:12px;color:var(--warn);margin-top:6px">⚠️ Check flood zone — near Tampa Bay</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=250+Douglas+Rd+W+Oldsmar+FL+34677" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/250+Douglas+Rd+W+Oldsmar+FL+34677" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=250+Douglas+Rd+W+Oldsmar+FL+34677" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- 33% discount to last sale -->
       <a class="card" href="https://www.zillow.com/homedetails/13202-Laraway-Ct-Riverview-FL-33579/45005250_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">⭐ 33% Below Last Sale</span>
+          <span class="card-photo-tag progress">33% Below Last Sale</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -755,23 +1408,19 @@
             </div>
             <span class="card-score">24/30</span>
           </div>
-          <div class="card-specs"><span>3 bd / 2 ba</span><span>1,236 sqft</span><span>0.27 acres</span></div>
+          <div class="card-specs"><span>3 bd / 2 ba</span><span>1,236 sqft</span><span>Last sold $325k</span></div>
           <div class="card-money">
             <div class="card-spread">+$60–80k spread</div>
-            <div class="card-ask">Ask $218,400 · Last sold $325k (Feb '24)</div>
+            <div class="card-ask">Ask $218,400</div>
           </div>
-          <div class="card-hoa high">Likely $150–250/mo — Summerfield Village (pools, amenities)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=13202+Laraway+Ct+Riverview+FL+33579" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/13202+Laraway+Ct+Riverview+FL+33579" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa high">Likely $150–250/mo · Summerfield Village</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=13202+Laraway+Ct+Riverview+FL+33579" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Ybor Heights 3/2 -->
       <a class="card" href="https://www.redfin.com/FL/Tampa/913-E-28th-Ave-33605/home/47330221" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Active Listing</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Redfin →</span>
@@ -787,21 +1436,17 @@
           </div>
           <div class="card-specs"><span>3 bd / 2 ba</span><span>1,310 sqft</span><span>Built 1923</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$50–70k spread</div>
+            <div class="card-spread">+$50–70k spread</div>
             <div class="card-ask">Ask $189,900 · Verify still active</div>
           </div>
-          <div class="card-hoa none">None — SFH in Ybor Heights</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=913+E+28th+Ave+Tampa+FL+33605" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/913+E+28th+Ave+Tampa+FL+33605" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa none">None — SFH</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=913+E+28th+Ave+Tampa+FL+33605" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Pasco gated community 4/2 -->
       <a class="card" href="https://www.remax.com/fl/new-port-richey/home-details/7814-brisbane-ct-new-port-richey-fl-34654/14213348678731392808/M00000146/W7878928" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Active Listing</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on RE/MAX →</span>
@@ -817,21 +1462,17 @@
           </div>
           <div class="card-specs"><span>4 bd / 2 ba</span><span>1,494 sqft</span><span>Built 2006</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$50–70k spread</div>
+            <div class="card-spread">+$50–70k spread</div>
             <div class="card-ask">Ask $216,000 · Gated community</div>
           </div>
-          <div class="card-hoa high">Unknown — gated community (Windsor Place), verify before offer</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=7814+Brisbane+Ct+New+Port+Richey+FL+34654" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/7814+Brisbane+Ct+New+Port+Richey+FL+34654" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa high">Unknown · Windsor Place — verify before offer</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=7814+Brisbane+Ct+New+Port+Richey+FL+34654" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Bradenton condo 2/2 price cut -->
       <a class="card" href="https://www.zillow.com/homedetails/2805-73rd-Street-Ct-W-2213-Bradenton-FL-34209/2056198276_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Price Cut</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -841,27 +1482,23 @@
           <div class="card-head">
             <div>
               <div class="card-title">2805 73rd St Ct W #2213</div>
-              <div class="card-locale">Bradenton, FL 34209 · W. Bradenton</div>
+              <div class="card-locale">Bradenton, FL 34209 · Manatee</div>
             </div>
             <span class="card-score">21/30</span>
           </div>
           <div class="card-specs"><span>2 bd / 2 ba</span><span>1,130 sqft</span><span>Condo</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $204,250 · Price cut $10,750</div>
+            <div class="card-spread">+$40–60k spread</div>
+            <div class="card-ask">Ask $204,250 · Cut $10,750</div>
           </div>
-          <div class="card-hoa high">Unknown — condo, verify dues + special assessments before offer</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2805+73rd+Street+Ct+W+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/2805+73rd+Street+Ct+W+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa high">Unknown · condo — verify dues + assessments</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=2805+73rd+Street+Ct+W+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Winter Haven 2/2 -->
-      <a class="card" href="https://www.zillow.com/homedetails/2237-Firestone-Pl-Winter-Haven-FL-33884/45005250_zpid/" target="_blank">
+      <a class="card" href="https://www.zillow.com/homedetails/2237-Firestone-Pl-Winter-Haven-FL-33884/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Active Listing</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -877,21 +1514,17 @@
           </div>
           <div class="card-specs"><span>2 bd / 2 ba</span><span>1,039 sqft</span><span>Foreclosure</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
+            <div class="card-spread">+$40–60k spread</div>
             <div class="card-ask">Ask $194,900</div>
           </div>
-          <div class="card-hoa unknown">Unknown — planned community, likely has HOA</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2237+Firestone+Pl+Winter+Haven+FL+33884" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/2237+Firestone+Pl+Winter+Haven+FL+33884" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa unknown">Unknown — likely planned community</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=2237+Firestone+Pl+Winter+Haven+FL+33884" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Sarasota townhouse low price high HOA -->
       <a class="card" href="https://www.raveis.com/prop/TB8467361/965-whitman-drive-sarasota-fl-34243" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Flip Only</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View Listing →</span>
@@ -907,21 +1540,17 @@
           </div>
           <div class="card-specs"><span>3 bd / 2.5 ba</span><span>1,356 sqft</span><span>Built 1973</span></div>
           <div class="card-money">
-            <div class="card-spread">Flip only — fast exit needed</div>
+            <div class="card-spread">Flip fast — exit quickly</div>
             <div class="card-ask">Ask $114,900</div>
           </div>
-          <div class="card-hoa danger">$476/mo ($5,712/yr) — flip only, kills any hold strategy</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=965+Whitman+Dr+Sarasota+FL+34243" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/965+Whitman+Dr+Sarasota+FL+34243" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa risk">$476/mo ($5,712/yr) — kills any hold strategy</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=965+Whitman+Dr+Sarasota+FL+34243" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Tampa 4/2 -->
       <a class="card" href="https://www.zillow.com/homedetails/7620-Dennison-Dr-Tampa-FL-33619/44940692_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag progress">Auction in Progress</span>
+          <span class="card-photo-tag progress">Active Listing</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -937,18 +1566,14 @@
           </div>
           <div class="card-specs"><span>4 bd / 2 ba</span><span>1,716 sqft</span><span>Built 1960</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $244,900–$289,900 · Verify price</div>
+            <div class="card-spread">+$40–60k spread</div>
+            <div class="card-ask">Ask $244,900 · Verify current price</div>
           </div>
-          <div class="card-hoa none">None — SFH in Palm River area</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=7620+Dennison+Dr+Tampa+FL+33619" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/7620+Dennison+Dr+Tampa+FL+33619" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa none">None — SFH</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=7620+Dennison+Dr+Tampa+FL+33619" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- HUD Palm Bay 2/2 exceptional price -->
       <a class="card" href="https://www.hudhousing.org/properties/hud/094-550759/2913-pinewood-dr-ne-palm-bay-fl-32905" target="_blank">
         <div class="card-photo">
           <span class="card-photo-tag progress">HUD REO</span>
@@ -965,23 +1590,24 @@
             </div>
             <span class="card-score">22/30</span>
           </div>
-          <div class="card-specs"><span>2 bd / 2 ba</span><span>955 sqft</span><span>HUD Case #094-550759</span></div>
+          <div class="card-specs"><span>2 bd / 2 ba</span><span>955 sqft</span><span>HUD #094-550759</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$50–70k spread</div>
-            <div class="card-ask">Ask $108,000 · Outside primary zone</div>
+            <div class="card-spread">+$50–70k spread</div>
+            <div class="card-ask">Ask $108,000 · Secondary zone</div>
           </div>
           <div class="card-hoa none">None — HUD SFH</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=2913+Pinewood+Dr+NE+Palm+Bay+FL+32905" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/2913+Pinewood+Dr+NE+Palm+Bay+FL+32905" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=2913+Pinewood+Dr+NE+Palm+Bay+FL+32905" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
     </div>
+
     <div class="notes-pad">
       <div class="notes-pad-head">
-        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div>
+          <h3>Drive order &amp; notes</h3>
+          <div class="notes-meta">Plan your route from wherever you're starting today.</div>
+        </div>
         <div class="notes-pad-actions">
           <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
           <button class="notes-btn" onclick="window.print()">Print</button>
@@ -998,25 +1624,25 @@
     </div>
   </section>
 
-  <!-- AUCTION SOON -->
+  <!-- ============ AUCTION QUEUE ============ -->
   <section id="page-soon" class="page">
     <div class="list-intro">
       <div>
-        <h2>Auction soon</h2>
-        <p>Listings approaching auction. Drive them this week, finalize offers before the window opens.</p>
+        <h2>Auction queue</h2>
+        <p>Specific properties at auction + county channels to register and monitor. Specific bids require pre-registration. Drive the properties before bidding.</p>
       </div>
-      <div class="list-intro-count" id="intro-count-soon">—</div>
+      <div class="list-intro-count">6 entries</div>
     </div>
     <div class="passed-bar" id="passed-bar-soon">
       <span id="passed-label-soon"></span>
-      <button onclick="togglePassed('soon')">Show passed</button>
+      <button onclick="togglePassed('soon')">Hide passed</button>
     </div>
-    <div class="cards" id="cards-soon">
 
-      <!-- Bradenton $100 opening bid — Xome trustee -->
-      <a class="card" href="https://www.xome.com/auctions/311-62ND-St-Nw-Bradenton-FL-34209-381662290" target="_blank" style="border:2px solid var(--status-soon)">
+    <div class="cards">
+
+      <a class="card" href="https://www.xome.com/auctions/311-62ND-St-Nw-Bradenton-FL-34209-381662290" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag soon">⭐⭐⭐ $100 Opening Bid — Xome</span>
+          <span class="card-photo-tag soon">⭐ $100 Opening Bid · Xome</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Xome →</span>
@@ -1026,24 +1652,20 @@
           <div class="card-head">
             <div>
               <div class="card-title">311 62nd St NW</div>
-              <div class="card-locale">Bradenton, FL 34209 · Palma Sola area</div>
+              <div class="card-locale">Bradenton, FL 34209 · Manatee</div>
             </div>
-            <span class="card-score">24/30</span>
+            <span class="card-score">26/30</span>
           </div>
           <div class="card-specs"><span>2 bd / 2 ba</span><span>1,351 sqft</span><span>Built 1969</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$80–120k spread</div>
-            <div class="card-ask">Opening bid $100 · Trustee auction TBD</div>
+            <div class="card-spread">+$100k+ upside</div>
+            <div class="card-ask">Opening bid $100 · Register on Xome</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Register on Xome to confirm auction date + inspection window</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=311+62nd+St+NW+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/311+62nd+St+NW+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa none">None — SFH trustee auction</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=311+62nd+St+NW+Bradenton+FL+34209" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- ServiceLink Tampa auction -->
       <a class="card" href="https://www.servicelinkauction.com/property-details/6917-bream-st-tampa-33617-fl-united-states-tps" target="_blank">
         <div class="card-photo">
           <span class="card-photo-tag soon">ServiceLink Auction</span>
@@ -1058,25 +1680,21 @@
               <div class="card-title">6917 Bream St</div>
               <div class="card-locale">Tampa, FL 33617 · Temple Terrace</div>
             </div>
-            <span class="card-score">23/30</span>
+            <span class="card-score">24/30</span>
           </div>
           <div class="card-specs"><span>3 bd / 2 ba</span><span>1,543 sqft</span><span>Built 1957</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$60–90k spread</div>
-            <div class="card-ask">Est. opening ~$19k · List $159k</div>
+            <div class="card-spread">+$80k+ potential</div>
+            <div class="card-ask">Est. bid $19k–$159k · Confirm on ServiceLink</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Also on PropertyOnion — verify current auction date</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=6917+Bream+St+Tampa+FL+33617" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/6917+Bream+St+Tampa+FL+33617" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa none">None — SFH pre-foreclosure</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=6917+Bream+St+Tampa+FL+33617" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Spring Hill MLS listed as auction -->
       <a class="card" href="https://www.zillow.com/homedetails/5364-Deltona-Blvd-Spring-Hill-FL-34606/44839692_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag soon">Auction Soon</span>
+          <span class="card-photo-tag soon">Auction Listing · Price Cut</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -1090,128 +1708,85 @@
             </div>
             <span class="card-score">20/30</span>
           </div>
-          <div class="card-specs"><span>2 bd / 2 ba</span><span>1,070 sqft</span><span>Built 1987</span></div>
+          <div class="card-specs"><span>2 bd / 2 ba</span><span>1,070 sqft</span><span>Pool · New roof 2025</span></div>
           <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $240,000 · New roof 2025 · Pool</div>
+            <div class="card-spread">+$40–60k spread</div>
+            <div class="card-ask">Ask $240,000 · Cut from $243,700</div>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">16 days on market · recent price cut · confirm auction date</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=5364+Deltona+Blvd+Spring+Hill+FL+34606" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/5364+Deltona+Blvd+Spring+Hill+FL+34606" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa unknown">Unknown — verify before offer</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=5364+Deltona+Blvd+Spring+Hill+FL+34606" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Hillsborough County Thursday tax deed channel -->
-      <div class="card" style="border:1px dashed var(--border-strong);background:var(--surface-2)">
-        <div class="card-photo" style="background:var(--ink);min-height:100px;display:flex;align-items:center;justify-content:center">
-          <span style="color:#fff;font-size:13px;font-weight:600;text-align:center;padding:16px">Hillsborough County<br>Tax Deed Auctions</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Hillsborough Tax Deeds</div>
-              <div class="card-locale">Every Thursday 10am · Online</div>
-            </div>
-            <span class="card-score" style="font-size:11px">Top channel</span>
-          </div>
-          <div class="card-specs"><span>Avg opening ~$26k</span><span>May 1, 8, 15, 22</span></div>
-          <div class="card-money">
-            <div class="card-spread">Sub-$75k opening bids common</div>
-            <div class="card-ask">Register: hillsborough.realtaxdeed.com</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://hillsborough.realtaxdeed.com" target="_blank">Register + Pull Thursday List →</a>
-          </div>
-        </div>
+    </div>
+
+    <h3 style="font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.06em; margin: 28px 0 12px;">County Auction Channels — Register &amp; Monitor</h3>
+
+    <div style="display:grid; gap:12px;">
+
+      <div class="auction-channel-card">
+        <div class="ach-title">Hillsborough County · Tax Deed Auctions</div>
+        <div class="ach-meta">Every Thursday 10:00 AM online · Avg opening bid ~$26k · Next: May 1, 8, 15, 22, 2026</div>
+        <div class="ach-meta">Register at hillsborough.realtaxdeed.com to unlock parcel list. Highest-leverage channel in our territory.</div>
+        <a class="ach-action" href="https://hillsborough.realtaxdeed.com" target="_blank">Register on realtaxdeed.com →</a>
       </div>
 
-      <!-- Pinellas upcoming auction — imminent Apr 28 -->
-      <div class="card" style="border:1px dashed var(--border-strong);background:var(--surface-2)">
-        <div class="card-photo" style="background:var(--status-soon);min-height:100px;display:flex;align-items:center;justify-content:center">
-          <span style="color:#fff;font-size:13px;font-weight:600;text-align:center;padding:16px">Pinellas County<br>⚡ Auction Apr 28 + May 13</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Pinellas Foreclosure Auctions</div>
-              <div class="card-locale">Largo cluster · Apr 28 IMMINENT</div>
-            </div>
-          </div>
-          <div class="card-specs"><span>Apr 28: 2/2 · 700 sqft</span><span>May 13: 3/3 · 1,700 sqft</span></div>
-          <div class="card-money">
-            <div class="card-spread">Avg 24% below market in Largo</div>
-            <div class="card-ask">Register: pinellasforeclosureauctions.com</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.pinellasclerk.org" target="_blank">Pull Parcel List ASAP →</a>
-          </div>
-        </div>
+      <div class="auction-channel-card">
+        <div class="ach-title">Pasco County · Foreclosure Auctions</div>
+        <div class="ach-meta">Online via Pasco Clerk · Example: 27353 Edenfield Dr Wesley Chapel sold Apr 2025 for $20,100 on a $431k assessed property.</div>
+        <div class="ach-meta">20+ Zillow foreclosures active. Register and pull upcoming list.</div>
+        <a class="ach-action" href="https://pascoforeclosureauctions.com" target="_blank">Register on pascoforeclosureauctions.com →</a>
       </div>
 
-      <!-- Pasco County auction queue -->
-      <div class="card" style="border:1px dashed var(--border-strong);background:var(--surface-2)">
-        <div class="card-photo" style="background:var(--muted);min-height:100px;display:flex;align-items:center;justify-content:center">
-          <span style="color:#fff;font-size:13px;font-weight:600;text-align:center;padding:16px">Pasco County<br>Foreclosure Auctions</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Pasco Foreclosure Auctions</div>
-              <div class="card-locale">20 active Zillow foreclosures in Pasco</div>
-            </div>
-          </div>
-          <div class="card-specs"><span>Example: sold $20,100 on $431k home</span></div>
-          <div class="card-money">
-            <div class="card-spread">Deep discounts common</div>
-            <div class="card-ask">Register: pascoforeclosureauctions.com</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.pascocountyclerk.com" target="_blank">Pull Auction Calendar →</a>
-          </div>
-        </div>
+      <div class="auction-channel-card">
+        <div class="ach-title">Pinellas County · Upcoming Auctions (Largo cluster)</div>
+        <div class="ach-meta">Auctions noted: Apr 28, May 13, May 20, 2026 · Avg discount 24% below market ($184k sale vs $242k value in Largo)</div>
+        <div class="ach-meta">Sizes: 4/3 · 3/3 · 2/2 · 3/1 — parcel addresses behind registration wall.</div>
+        <a class="ach-action" href="https://pinellasforeclosureauctions.com" target="_blank">Register on pinellasforeclosureauctions.com →</a>
       </div>
 
     </div>
-    <div class="notes-pad">
+
+    <div class="notes-pad" style="margin-top:28px;">
       <div class="notes-pad-head">
-        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div>
+          <h3>Auction notes</h3>
+          <div class="notes-meta">Bid strategy, registration status, pre-auction drive results.</div>
+        </div>
         <div class="notes-pad-actions">
           <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
           <button class="notes-btn" onclick="window.print()">Print</button>
         </div>
       </div>
       <div class="notes-rows">
-        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="First stop…"></div>
-        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder="Second stop…"></div>
-        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
+        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="311 62nd St NW — drive notes…"></div>
+        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder="6917 Bream St — drive notes…"></div>
+        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder="Hillsborough Thursday — parcels to watch…"></div>
         <div class="notes-row"><div class="notes-num">4</div><input class="notes-input" type="text" placeholder=""></div>
-        <div class="notes-row"><div class="notes-num">5</div><input class="notes-input" type="text" placeholder=""></div>
         <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
       </div>
     </div>
   </section>
 
-  <!-- HOMES TO WATCH -->
+  <!-- ============ WATCHLIST ============ -->
   <section id="page-watch" class="page">
     <div class="list-intro">
       <div>
-        <h2>Homes to watch</h2>
-        <p>Lower priority — rural ceiling, restricted communities, or unverified data. Keep eyes on, drive only if first two tabs clear.</p>
+        <h2>Watchlist</h2>
+        <p>Over budget, rural ceiling, or needs verification. Worth revisiting if price drops or deal improves. Don't drive until active tabs are cleared.</p>
       </div>
-      <div class="list-intro-count" id="intro-count-watch">—</div>
+      <div class="list-intro-count">5 properties</div>
     </div>
     <div class="passed-bar" id="passed-bar-watch">
       <span id="passed-label-watch"></span>
-      <button onclick="togglePassed('watch')">Show passed</button>
+      <button onclick="togglePassed('watch')">Hide passed</button>
     </div>
-    <div class="cards" id="cards-watch">
 
-      <!-- Hudson 3/2 on 4 acres — 272 DOM -->
+    <div class="cards">
+
       <a class="card" href="https://www.zillow.com/homedetails/17889-Thomas-Blvd-Hudson-FL-34667/46348113_zpid/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag watch">Watching</span>
+          <span class="card-photo-tag watch">272 Days on Market</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -1221,27 +1796,101 @@
           <div class="card-head">
             <div>
               <div class="card-title">17889 Thomas Blvd</div>
-              <div class="card-locale">Hudson, FL 34667 · Pasco · 3.98 acres</div>
+              <div class="card-locale">Hudson, FL 34667 · Pasco</div>
             </div>
-            <span class="card-score">20/30</span>
+            <span class="card-score">19/30</span>
           </div>
-          <div class="card-specs"><span>3 bd / 2 ba</span><span>~1,500 sqft</span><span>272 days on market</span></div>
+          <div class="card-specs"><span>3 bd / 2 ba</span><span>3.98 acres</span><span>Rural / well+septic</span></div>
           <div class="card-money">
-            <div class="card-spread">Strong negotiating leverage</div>
-            <div class="card-ask">Ask $185,900 · Well/septic verify</div>
+            <div class="card-spread">Strong land value play</div>
+            <div class="card-ask">Ask $185,900 · Heavy negotiating room</div>
           </div>
-          <div class="card-hoa none">None — rural SFH on acreage</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=17889+Thomas+Blvd+Hudson+FL+34667" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/17889+Thomas+Blvd+Hudson+FL+34667" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa none">None — rural acreage SFH</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=17889+Thomas+Blvd+Hudson+FL+34667" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
-      <!-- Brooksville 3/3 over budget but large -->
+      <a class="card" href="https://www.zillow.com/homedetails/155-Summerset-Dr-Punta-Gorda-FL-33982/43573726_zpid/" target="_blank">
+        <div class="card-photo">
+          <span class="card-photo-tag watch">Waterfront · Over Budget</span>
+          <div class="card-photo-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            <span>View on Zillow →</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">155 Summerset Dr</div>
+              <div class="card-locale">Punta Gorda, FL 33982 · Charlotte</div>
+            </div>
+            <span class="card-score">18/30</span>
+          </div>
+          <div class="card-specs"><span>2 bd / 2 ba</span><span>1,064 sqft</span><span>Pool · 80ft waterfront</span></div>
+          <div class="card-money">
+            <div class="card-spread">Waterfront premium if flood zone clears</div>
+            <div class="card-ask">Ask $311,600 · Verify flood zone first</div>
+          </div>
+          <div class="card-hoa unknown">Unknown · Peace River Shores — verify</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=155+Summerset+Dr+Punta+Gorda+FL+33982" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
+        </div>
+      </a>
+
+      <a class="card" href="https://www.hudhousing.org/properties/hud/095-600656/5481-burnham-ct-north-fort-myers-fl-33903" target="_blank">
+        <div class="card-photo">
+          <span class="card-photo-tag watch">HUD REO · Secondary Zone</span>
+          <div class="card-photo-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            <span>View HUD Listing →</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">5481 Burnham Ct</div>
+              <div class="card-locale">N Fort Myers, FL 33903 · Lee</div>
+            </div>
+            <span class="card-score">19/30</span>
+          </div>
+          <div class="card-specs"><span>3 bd / 2 ba</span><span>1,544 sqft</span><span>HUD #095-600656</span></div>
+          <div class="card-money">
+            <div class="card-spread">+$40–60k spread</div>
+            <div class="card-ask">Ask $233,100 · Secondary FL zone</div>
+          </div>
+          <div class="card-hoa none">None — HUD SFH</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=5481+Burnham+Ct+North+Fort+Myers+FL+33903" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
+        </div>
+      </a>
+
+      <a class="card" href="https://www.hudhousing.org/properties/hud/126-014593/14455-nw-284th-st-okeechobee-fl-34972" target="_blank">
+        <div class="card-photo">
+          <span class="card-photo-tag watch">HUD REO · Interior FL</span>
+          <div class="card-photo-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+            <span>View HUD Listing →</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-head">
+            <div>
+              <div class="card-title">14455 NW 284th St</div>
+              <div class="card-locale">Okeechobee, FL 34972 · Okeechobee</div>
+            </div>
+            <span class="card-score">18/30</span>
+          </div>
+          <div class="card-specs"><span>4 bd / 2 ba</span><span>1,440 sqft</span><span>HUD #126-014593</span></div>
+          <div class="card-money">
+            <div class="card-spread">+$50–70k if market holds</div>
+            <div class="card-ask">Ask $175,000 · Okeechobee market risk</div>
+          </div>
+          <div class="card-hoa none">None — HUD SFH</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=14455+NW+284th+St+Okeechobee+FL+34972" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
+        </div>
+      </a>
+
       <a class="card" href="https://www.zillow.com/homedetails/9056-Rosco-Trl-Brooksville-FL-34602/" target="_blank">
         <div class="card-photo">
-          <span class="card-photo-tag watch">Watching — Over Budget</span>
+          <span class="card-photo-tag watch">Over Budget · Rare 3/3</span>
           <div class="card-photo-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
             <span>View on Zillow →</span>
@@ -1253,116 +1902,26 @@
               <div class="card-title">9056 Rosco Trl</div>
               <div class="card-locale">Brooksville, FL 34602 · Hernando</div>
             </div>
-            <span class="card-score">19/30</span>
+            <span class="card-score">17/30</span>
           </div>
-          <div class="card-specs"><span>3 bd / 3 ba</span><span>2,052 sqft</span><span>Rare at this price</span></div>
+          <div class="card-specs"><span>3 bd / 3 ba</span><span>2,052 sqft</span><span>Foreclosure</span></div>
           <div class="card-money">
-            <div class="card-spread">Exception deal if numbers work</div>
-            <div class="card-ask">Ask $299,900 · Over $250k target</div>
+            <div class="card-spread">Rare 3/3 — exception deal candidate</div>
+            <div class="card-ask">Ask $299,900 · Over budget — needs price drop</div>
           </div>
-          <div class="card-hoa unknown">Unknown — verify with county records</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=9056+Rosco+Trl+Brooksville+FL+34602" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/9056+Rosco+Trl+Brooksville+FL+34602" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
-        </div>
-      </a>
-
-      <!-- Punta Gorda waterfront pool home -->
-      <a class="card" href="https://www.zillow.com/homedetails/155-Summerset-Dr-Punta-Gorda-FL-33982/43573726_zpid/" target="_blank">
-        <div class="card-photo">
-          <span class="card-photo-tag watch">Watching — Waterfront</span>
-          <div class="card-photo-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
-            <span>View on Zillow →</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">155 Summerset Dr</div>
-              <div class="card-locale">Punta Gorda, FL 33982 · Waterfront</div>
-            </div>
-            <span class="card-score">18/30</span>
-          </div>
-          <div class="card-specs"><span>2 bd / 2 ba</span><span>1,064 sqft</span><span>Pool · 80ft waterfront</span></div>
-          <div class="card-money">
-            <div class="card-spread">Waterfront premium if clean title</div>
-            <div class="card-ask">Ask $311,600 · Gulf access · Sold as-is</div>
-          </div>
-          <div class="card-hoa unknown">Unknown — Peace River Shores, verify</div>
-          <div style="font-size:12px;color:var(--danger);margin-top:6px">⚠️ Flood zone — verify flood insurance cost</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=155+Summerset+Dr+Punta+Gorda+FL+33982" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/155+Summerset+Dr+Punta+Gorda+FL+33982" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
-        </div>
-      </a>
-
-      <!-- HUD North Fort Myers secondary zone -->
-      <a class="card" href="https://www.hudhousing.org/properties/hud/095-600656/5481-burnham-ct-north-fort-myers-fl-33903" target="_blank">
-        <div class="card-photo">
-          <span class="card-photo-tag watch">Watching — Secondary Zone</span>
-          <div class="card-photo-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
-            <span>View HUD Listing →</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">5481 Burnham Ct</div>
-              <div class="card-locale">N. Fort Myers, FL 33903 · Lee County</div>
-            </div>
-            <span class="card-score">20/30</span>
-          </div>
-          <div class="card-specs"><span>3 bd / 2 ba</span><span>1,544 sqft</span><span>HUD REO</span></div>
-          <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $233,100 · Case #095-600656</div>
-          </div>
-          <div class="card-hoa none">None — HUD SFH</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=5481+Burnham+Ct+North+Fort+Myers+FL+33903" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/5481+Burnham+Ct+North+Fort+Myers+FL+33903" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
-        </div>
-      </a>
-
-      <!-- Polk County Okeechobee 4/2 HUD -->
-      <a class="card" href="https://www.hudhousing.org/properties/hud/126-014593/14455-nw-284th-st-okeechobee-fl-34972" target="_blank">
-        <div class="card-photo">
-          <span class="card-photo-tag watch">Watching — Interior FL</span>
-          <div class="card-photo-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
-            <span>View HUD Listing →</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">14455 NW 284th St</div>
-              <div class="card-locale">Okeechobee, FL 34972 · Secondary zone</div>
-            </div>
-            <span class="card-score">19/30</span>
-          </div>
-          <div class="card-specs"><span>4 bd / 2 ba</span><span>1,440 sqft</span><span>HUD Case #126-014593</span></div>
-          <div class="card-money">
-            <div class="card-spread">Est. +$40–60k spread</div>
-            <div class="card-ask">Ask $175,000 · 4/2 at this price is rare</div>
-          </div>
-          <div class="card-hoa none">None — HUD rural SFH</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/maps/dir/?api=1&destination=14455+NW+284th+St+Okeechobee+FL+34972" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
-            <a class="action secondary" href="https://www.google.com/maps/place/14455+NW+284th+St+Okeechobee+FL+34972" target="_blank" onclick="event.stopPropagation()">Street View</a>
-          </div>
+          <div class="card-hoa unknown">Unknown — verify before considering</div>
+          <a class="card-nav" href="https://www.google.com/maps/dir/?api=1&destination=9056+Rosco+Trl+Brooksville+FL+34602" target="_blank" onclick="event.stopPropagation()">Navigate →</a>
         </div>
       </a>
 
     </div>
+
     <div class="notes-pad">
       <div class="notes-pad-head">
-        <div><h3>Drive order &amp; notes</h3><div class="notes-meta">Plan your route from wherever you're starting today.</div></div>
+        <div>
+          <h3>Watch notes</h3>
+          <div class="notes-meta">Note what would need to change for each to become a buy.</div>
+        </div>
         <div class="notes-pad-actions">
           <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
           <button class="notes-btn" onclick="window.print()">Print</button>
@@ -1379,152 +1938,678 @@
     </div>
   </section>
 
-  <!-- WORTH A FLIGHT -->
+  <!-- ============ WORTH A FLIGHT ============ -->
   <section id="page-flight" class="page">
     <div class="list-intro">
       <div>
         <h2>Worth a flight</h2>
-        <p>Markets within 1–2 hours of Tampa where the spread beats local deals. A $300 round-trip is nothing if the margin is $50k better.</p>
+        <p>Markets outside Tampa Bay where the numbers could justify a trip. Strong cash flow, low entry, or unique opportunity. Scout before committing — but don't rule them out.</p>
       </div>
-      <div class="list-intro-count" id="intro-count-flight">—</div>
+      <div class="list-intro-count">4 markets</div>
     </div>
     <div class="passed-bar" id="passed-bar-flight">
       <span id="passed-label-flight"></span>
-      <button onclick="togglePassed('flight')">Show passed</button>
+      <button onclick="togglePassed('flight')">Hide passed</button>
     </div>
-    <div class="cards" id="cards-flight">
 
-      <!-- Birmingham AL -->
-      <a class="card" href="https://www.zillow.com/homes/foreclosures/Birmingham-AL_rb/" target="_blank">
-        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-          <span style="color:#fff;font-size:22px">✈</span>
-          <span style="color:#fff;font-size:13px;font-weight:600">1.5 hr from Tampa</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Birmingham, AL</div>
-              <div class="card-locale">Jefferson County · 1.5 hr flight</div>
-            </div>
-            <span class="card-score">Market</span>
-          </div>
-          <div class="card-specs"><span>SFH foreclosures</span><span>Often $55–90k</span></div>
-          <div class="card-money">
-            <div class="card-spread">$60–100k spreads common</div>
-            <div class="card-ask">ARV $130–160k on $60k buys</div>
-          </div>
-          <div class="card-hoa none">Most SFH — no HOA</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/flights#flt=TPA.BHM" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → BHM →</a>
-          </div>
-        </div>
-      </a>
+    <div class="cards">
 
-      <!-- Memphis TN -->
-      <a class="card" href="https://www.zillow.com/homes/foreclosures/Memphis-TN_rb/" target="_blank">
-        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-          <span style="color:#fff;font-size:22px">✈</span>
-          <span style="color:#fff;font-size:13px;font-weight:600">2 hr from Tampa</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Memphis, TN</div>
-              <div class="card-locale">Shelby County · 2 hr flight</div>
-            </div>
-            <span class="card-score">Market</span>
+      <div class="market-card">
+        <div class="market-card-body">
+          <span class="market-tag">✈ Birmingham, AL</span>
+          <div class="market-title">Birmingham Metro</div>
+          <div class="market-sub">Jefferson &amp; Shelby counties · ~7 hr drive or 1 hr flight</div>
+          <div class="market-stats">
+            <div class="market-stat"><strong>Avg foreclosure</strong> ~$90–130k</div>
+            <div class="market-stat"><strong>Avg ARV</strong> $180–250k</div>
+            <div class="market-stat"><strong>Rental yield</strong> 8–12%</div>
           </div>
-          <div class="card-specs"><span>Bank-owned inventory</span><span>Often $45–75k</span></div>
-          <div class="card-money">
-            <div class="card-spread">$70–110k spreads possible</div>
-            <div class="card-ask">High rental demand · strong flip market</div>
-          </div>
-          <div class="card-hoa none">Most SFH — no HOA</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/flights#flt=TPA.MEM" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → MEM →</a>
-          </div>
-        </div>
-      </a>
-
-      <!-- Savannah GA -->
-      <a class="card" href="https://www.zillow.com/homes/foreclosures/Savannah-GA_rb/" target="_blank">
-        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-          <span style="color:#fff;font-size:22px">✈</span>
-          <span style="color:#fff;font-size:13px;font-weight:600">1 hr from Tampa</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">Savannah, GA</div>
-              <div class="card-locale">Chatham County · 1 hr flight</div>
-            </div>
-            <span class="card-score">Market</span>
-          </div>
-          <div class="card-specs"><span>Growing market</span><span>Foreclosures $80–130k</span></div>
-          <div class="card-money">
-            <div class="card-spread">$50–80k spreads</div>
-            <div class="card-ask">Port growth driving demand</div>
-          </div>
-          <div class="card-hoa unknown">Varies by community</div>
-          <div style="font-size:12px;color:var(--muted);margin-top:6px">Richard expanding search here — properties coming</div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/flights#flt=TPA.SAV" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → SAV →</a>
-          </div>
-        </div>
-      </a>
-
-      <!-- New Orleans LA -->
-      <a class="card" href="https://www.zillow.com/homes/foreclosures/New-Orleans-LA_rb/" target="_blank">
-        <div class="card-photo" style="background:var(--ink);min-height:120px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px">
-          <span style="color:#fff;font-size:22px">✈</span>
-          <span style="color:#fff;font-size:13px;font-weight:600">1.5 hr from Tampa</span>
-        </div>
-        <div class="card-body">
-          <div class="card-head">
-            <div>
-              <div class="card-title">New Orleans, LA</div>
-              <div class="card-locale">Orleans Parish · 1.5 hr flight</div>
-            </div>
-            <span class="card-score">Market</span>
-          </div>
-          <div class="card-specs"><span>Post-storm distressed inventory</span></div>
-          <div class="card-money">
-            <div class="card-spread">Deep discounts still available</div>
-            <div class="card-ask">Shotgun houses, doubles common</div>
-          </div>
-          <div class="card-hoa none">Most SFH — no HOA</div>
-          <div style="font-size:12px;color:var(--warn);margin-top:6px">⚠️ Flood zone research critical here</div>
-          <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px">
-            <a class="action primary" href="https://www.google.com/flights#flt=TPA.MSY" target="_blank" onclick="event.stopPropagation()">Check Flights TPA → MSY →</a>
-          </div>
-        </div>
-      </a>
-
-    </div>
-    <div class="notes-pad">
-      <div class="notes-pad-head">
-        <div><h3>Flight notes</h3><div class="notes-meta">Markets you want Richard to dig into specifically.</div></div>
-        <div class="notes-pad-actions">
-          <button class="notes-btn" onclick="clearNotes(this)">Clear</button>
+          <div class="market-note">One of the most affordable metros in the Southeast. SFH foreclosures in Vestavia Hills / Hoover area move fast. Suburb ring has strong resale demand. Lower rehab labor costs than FL. Check: Jefferson County foreclosure auctions online.</div>
+          <a class="market-search" href="https://www.zillow.com/birmingham-al/foreclosures/" target="_blank">Search Birmingham Foreclosures →</a>
         </div>
       </div>
-      <div class="notes-rows">
-        <div class="notes-row"><div class="notes-num">1</div><input class="notes-input" type="text" placeholder="Market to research…"></div>
-        <div class="notes-row"><div class="notes-num">2</div><input class="notes-input" type="text" placeholder=""></div>
-        <div class="notes-row"><div class="notes-num">3</div><input class="notes-input" type="text" placeholder=""></div>
-        <div class="notes-row"><div class="notes-num">—</div><input class="notes-input" type="text" placeholder="Notes…"></div>
+
+      <div class="market-card">
+        <div class="market-card-body">
+          <span class="market-tag">✈ Memphis, TN</span>
+          <div class="market-title">Memphis Metro</div>
+          <div class="market-sub">Shelby County TN · ~11 hr drive or 2 hr flight</div>
+          <div class="market-stats">
+            <div class="market-stat"><strong>Avg foreclosure</strong> $50–120k</div>
+            <div class="market-stat"><strong>Avg ARV</strong> $130–220k</div>
+            <div class="market-stat"><strong>Rental yield</strong> 10–16%</div>
+          </div>
+          <div class="market-note">Consistently rated top 3 cash flow markets in the US. Investor-friendly landlord laws. High volume of bank-owned at low prices. Risk: higher crime in pockets — neighborhood selection is critical. Look at Bartlett / Germantown / Collierville suburbs for flips. Shelby County Chancery Court auctions run regularly.</div>
+          <a class="market-search" href="https://www.zillow.com/memphis-tn/foreclosures/" target="_blank">Search Memphis Foreclosures →</a>
+        </div>
       </div>
+
+      <div class="market-card">
+        <div class="market-card-body">
+          <span class="market-tag">✈ Savannah, GA</span>
+          <div class="market-title">Savannah / Chatham County</div>
+          <div class="market-sub">Coastal Georgia · ~6 hr drive or 1 hr flight</div>
+          <div class="market-stats">
+            <div class="market-stat"><strong>Avg foreclosure</strong> $120–180k</div>
+            <div class="market-stat"><strong>Avg ARV</strong> $220–350k</div>
+            <div class="market-stat"><strong>STR yield</strong> strong near historic district</div>
+          </div>
+          <div class="market-note">Tourism-driven appreciation. Short-term rental (Airbnb/VRBO) adds a second exit strategy on top of a traditional flip. Historic district properties command premiums but require careful renovation compliance. Pooler / Rincon suburbs have strong conventional resale. Chatham County Sheriff auctions monthly.</div>
+          <a class="market-search" href="https://www.zillow.com/savannah-ga/foreclosures/" target="_blank">Search Savannah Foreclosures →</a>
+        </div>
+      </div>
+
+      <div class="market-card">
+        <div class="market-card-body">
+          <span class="market-tag">✈ Pensacola / FL Panhandle</span>
+          <div class="market-title">Pensacola · Panama City · Fort Walton</div>
+          <div class="market-sub">Extended FL zone · ~7 hr drive · No flight needed if driving</div>
+          <div class="market-stats">
+            <div class="market-stat"><strong>Avg foreclosure</strong> $100–180k</div>
+            <div class="market-stat"><strong>Avg ARV</strong> $200–300k</div>
+            <div class="market-stat"><strong>Seasonal demand</strong> strong summer rental</div>
+          </div>
+          <div class="market-note">Still Florida — same rules, same title companies, same HUD/Fannie channels. Military presence (NAS Pensacola) keeps rental demand stable year-round. Gulf-front properties command premiums but carry flood risk. Escambia County foreclosure auctions run online. Under-searched by Tampa-based investors.</div>
+          <a class="market-search" href="https://www.zillow.com/pensacola-fl/foreclosures/" target="_blank">Search Pensacola Foreclosures →</a>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- LIEN PROTOCOL -->
+  <!-- ============ PROPERTY 01 ============ -->
+  <section id="page-p1" class="page">
+    <button class="back-link" onclick="show('progress', document.querySelectorAll('.tab')[0])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Auction in Progress
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill progress"><span class="pill-dot"></span>Auction in Progress</span>
+          <span class="prop-tag accent">Top Pick · Score 27/30</span>
+          <span class="prop-tag">Bank-Owned</span>
+        </div>
+        <h2>1201 Alhambra Crest Drive</h2>
+        <div class="prop-locale">Ruskin, Florida</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p1">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>Front Exterior<span class="carousel-slide-label">01 · Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L12 4l10 8M5 10v10h14V10"/></svg>Roof Condition<span class="carousel-slide-label">02 · Roof</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="4" width="16" height="16" rx="1"/></svg>Foundation / Sides<span class="carousel-slide-label">03 · Foundation</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>Block / Neighbors<span class="carousel-slide-label">04 · Block</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Add more photos<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score hot">27/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p1"></div>
+        <p class="photo-caption">Same-street comps ran $303k to $369k in 2024–25. The arithmetic does the convincing.</p>
+        <div class="photo-add-note"><strong>↑</strong> Swipe, click arrows, or use ← → keys</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4><span class="panel-sub">all-in vs. resale</span></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$147,100</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab</span><span class="price-val">~$50,000</span></div>
+          <div class="price-row"><span class="price-label">ARV (low–high)</span><span class="price-val">$303k – $369k</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$100–180k</span></div>
+          <p class="price-note">Even on the $50k rehab estimate and the low-comp ARV, you clear six figures. The high side is the real number on this block.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">4 / 3</div></div>
+            <div class="spec"><div class="spec-l">Sqft</div><div class="spec-v">2,440</div></div>
+            <div class="spec"><div class="spec-l">Year</div><div class="spec-v"><span class="ok">2008</span></div></div>
+            <div class="spec"><div class="spec-l">Type</div><div class="spec-v"><span class="ok small">SFH</span></div></div>
+            <div class="spec"><div class="spec-l">Flood</div><div class="spec-v"><span class="warn small">Verify</span></div></div>
+            <div class="spec"><div class="spec-l">HOA</div><div class="spec-v"><span class="small">Check</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Comparables</h4><span class="panel-sub">same street · 2024–25</span></div>
+          <table class="comps-table">
+            <thead><tr><th>Source</th><th style="text-align:right">Sold For</th></tr></thead>
+            <tbody>
+              <tr><td>Same-street comp · low</td><td class="num">$303,000</td></tr>
+              <tr><td>Same-street comp · high</td><td class="num">$369,000</td></tr>
+              <tr><td><b>ARV range</b></td><td class="range">$303–369k</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4><span class="panel-sub">tap to mark</span></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Run search → "<strong>Alhambra Crest</strong>"</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=1201+Alhambra+Crest+Dr+Ruskin+FL+33570" target="_blank" class="action primary">Navigate</a>
+          <a href="https://www.google.com/maps/place/1201+Alhambra+Crest+Dr,+Ruskin,+FL+33570" target="_blank" class="action secondary">Street View</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>On-Site Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Real house — not mobile or manufactured</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Roof: missing shingles, sagging, visible damage</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Foundation: cracks, water staining at base</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Windows intact, none boarded</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Neighboring homes well-kept</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Bank notice or lockbox visible</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph front and both sides</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PROPERTY 02 ============ -->
+  <section id="page-p2" class="page">
+    <button class="back-link" onclick="show('progress', document.querySelectorAll('.tab')[0])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Auction in Progress
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill progress"><span class="pill-dot"></span>Auction in Progress</span>
+          <span class="prop-tag">Bank-Owned · Score 23/30</span>
+        </div>
+        <h2>Unity Village Drive</h2>
+        <div class="prop-locale">Ruskin, Florida · address ambiguous (2120 or 2206)</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p2">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>2120 Front<span class="carousel-slide-label">01 · 2120 Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>2120 Back<span class="carousel-slide-label">02 · 2120 Back</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>2206 Front<span class="carousel-slide-label">03 · 2206 Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>2206 Back<span class="carousel-slide-label">04 · 2206 Back</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Add HVAC, exterior detail<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score">23/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p2"></div>
+        <p class="photo-caption">Two possible addresses on the same street — bank notice and lockbox tell you which is the deal.</p>
+        <div class="photo-add-note"><strong>↑</strong> Capture both houses · 4 photos minimum</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$139,900</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab (cosmetic)</span><span class="price-val">~$25,000</span></div>
+          <div class="price-row"><span class="price-label">ARV (low–high)</span><span class="price-val">$250k – $297k</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$95–110k</span></div>
+          <p class="price-note">Light cosmetic flip — 2006 build, paint, floors, fixtures. Comps support a clean exit at $275k median.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">3 / 2</div></div>
+            <div class="spec"><div class="spec-l">Sqft</div><div class="spec-v">~1,470</div></div>
+            <div class="spec"><div class="spec-l">Year</div><div class="spec-v"><span class="ok">2006</span></div></div>
+            <div class="spec"><div class="spec-l">Flood</div><div class="spec-v"><span class="ok small">Zone X</span></div></div>
+            <div class="spec"><div class="spec-l">HOA</div><div class="spec-v"><span class="warn small">Verify</span></div></div>
+            <div class="spec"><div class="spec-l">Type</div><div class="spec-v"><span class="ok small">SFH</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Comparables</h4><span class="panel-sub">Unity Village Drive</span></div>
+          <table class="comps-table">
+            <thead><tr><th>Source</th><th style="text-align:right">Sold For</th></tr></thead>
+            <tbody>
+              <tr><td>Unity Village comp · low</td><td class="num">$250,000</td></tr>
+              <tr><td>Unity Village comp · high</td><td class="num">$297,000</td></tr>
+              <tr><td><b>ARV range</b></td><td class="range">$250–297k</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Run search → "<strong>Unity Village</strong>"</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=2120+Unity+Village+Dr+Ruskin+FL+33570" target="_blank" class="action primary">Navigate → 2120</a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=2206+Unity+Village+Dr+Ruskin+FL+33570" target="_blank" class="action secondary">Also → 2206</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>On-Site Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Identify which house has the bank notice (2120 or 2206)</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Exterior: paint, fascia, gutters</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Outdoor HVAC unit — looks recent or rusted</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Water staining on exterior walls</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Neighborhood maintained, lawns kept</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph both addresses</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PROPERTY 03 ============ -->
+  <section id="page-p3" class="page">
+    <button class="back-link" onclick="show('soon', document.querySelectorAll('.tab')[1])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Auction Soon
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill soon"><span class="pill-dot"></span>Auction Soon</span>
+          <span class="prop-tag warn">Confirm Street</span>
+          <span class="prop-tag">Score 23/30</span>
+        </div>
+        <h2>Hawks Island / Hawks View</h2>
+        <div class="prop-locale">Ruskin, Florida · street name to confirm</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p3">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Front Exterior<span class="carousel-slide-label">01 · Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L12 4l10 8M5 10v10h14V10"/></svg>Roof Condition<span class="carousel-slide-label">02 · Roof</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M5 12V6h14v6"/></svg>Street Sign (View vs Island)<span class="carousel-slide-label">03 · Street Sign</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/></svg>Block / Neighbors<span class="carousel-slide-label">04 · Block</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Add foundation, sides<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score">23/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p3"></div>
+        <p class="photo-caption">Listing says "Hawks Island" — confirmed foreclosure record points to "Hawks View." Verify on arrival.</p>
+        <div class="photo-add-note"><strong>↑</strong> Confirm correct address before shooting</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$140,600</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab</span><span class="price-val">~$30,000</span></div>
+          <div class="price-row"><span class="price-label">ARV (low–high)</span><span class="price-val">$260k – $355k</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$90–110k</span></div>
+          <p class="price-note">3/2 in Ruskin clears comfortably. Wide ARV band reflects condition uncertainty until photos are in.</p>
+        </div>
+
+        <div class="warning">
+          <h5>Confirm Street Name on Arrival</h5>
+          <p>Listing says <b>Hawks Island Dr</b>; the bank's foreclosure paperwork is on <b>Hawks View Dr</b>. They're likely adjacent. Check both on Google Maps when you pull up — only one has the property.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">3 / 2</div></div>
+            <div class="spec"><div class="spec-l">Flood</div><div class="spec-v"><span class="ok small">Zone X</span></div></div>
+            <div class="spec"><div class="spec-l">Street</div><div class="spec-v"><span class="warn small">Verify</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Comparables</h4><span class="panel-sub">Ruskin · 3/2 SFH</span></div>
+          <table class="comps-table">
+            <thead><tr><th>Source</th><th style="text-align:right">Sold For</th></tr></thead>
+            <tbody>
+              <tr><td>Local 3/2 comp · low</td><td class="num">$260,000</td></tr>
+              <tr><td>Local 3/2 comp · high</td><td class="num">$355,000</td></tr>
+              <tr><td><b>ARV range</b></td><td class="range">$260–355k</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Search BOTH → "<strong>Hawks View</strong>" + "<strong>Hawks Island</strong>"</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+View+Dr+Ruskin+FL+33570" target="_blank" class="action primary">Hawks View</a>
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Hawks+Island+Dr+Ruskin+FL+33570" target="_blank" class="action secondary">Hawks Island</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>On-Site Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Confirm actual street name (View vs. Island)</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Find the house with foreclosure notice</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Roof, exterior, foundation</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Subdivision feel or isolated street?</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PROPERTY 04 ============ -->
+  <section id="page-p4" class="page">
+    <button class="back-link" onclick="show('soon', document.querySelectorAll('.tab')[1])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Auction Soon
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill soon"><span class="pill-dot"></span>Auction Soon</span>
+          <span class="prop-tag danger">Flood Verify Required</span>
+          <span class="prop-tag">Score 23/30</span>
+        </div>
+        <h2>W Alsobrook Street</h2>
+        <div class="prop-locale">Plant City, Florida</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p4">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Front Exterior<span class="carousel-slide-label">01 · Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 18h18M5 14l3-3 4 2 5-5 4 4"/></svg>Lot Grade & Drainage<span class="carousel-slide-label">02 · Grade</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="6" y="4" width="12" height="16" rx="1"/></svg>Bath Wall (2nd bath?)<span class="carousel-slide-label">03 · 2nd Bath Spot</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11H3z"/></svg>Side / Rear<span class="carousel-slide-label">04 · Side</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Add water staining shots<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score">23/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p4"></div>
+        <p class="photo-caption">Plant City median sold $335k in 2025. The play is adding a second bath — does the floor plan allow it?</p>
+        <div class="photo-add-note"><strong>↑</strong> Document grade & drainage carefully</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$135,000</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab + 2nd Bath</span><span class="price-val">~$60,000</span></div>
+          <div class="price-row"><span class="price-label">ARV (with 2nd bath)</span><span class="price-val">$240k+</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$70–100k</span></div>
+          <p class="price-note">Adding the second bath is the unlock. Without it, this is a 3/1 in a 3/2 market — capped exit, thinner margin.</p>
+        </div>
+
+        <div class="warning danger">
+          <h5>Flood Zone Could Kill This Deal</h5>
+          <p>East Alsobrook is confirmed <b>Zone AE</b> — mandatory flood insurance ($2k+/year) and a harder resale. The west side may differ. <b>Verify at msc.fema.gov before any offer.</b></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">3 / 1</div></div>
+            <div class="spec"><div class="spec-l">Flood</div><div class="spec-v"><span class="danger small">Check</span></div></div>
+            <div class="spec"><div class="spec-l">HOA</div><div class="spec-v"><span class="ok small">None likely</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Comparables</h4><span class="panel-sub">Plant City · 2025</span></div>
+          <table class="comps-table">
+            <thead><tr><th>Source</th><th style="text-align:right">Sold For</th></tr></thead>
+            <tbody>
+              <tr><td>Plant City median sold</td><td class="num">$335,000</td></tr>
+              <tr><td>3/2 conservative ARV</td><td class="num">$240,000</td></tr>
+              <tr><td><b>ARV target (post-bath)</b></td><td class="range">$240k+</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Run search → "<strong>Alsobrook</strong>"</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=W+Alsobrook+St+Plant+City+FL+33563" target="_blank" class="action primary">Navigate</a>
+          <a href="https://msc.fema.gov/portal/search" target="_blank" class="action danger">Flood Check First</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>On-Site Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Street sits low? Standing water nearby?</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Find house number with bank notice</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Estimate age of structure from outside</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Room to add second bath (garage, addition)?</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PROPERTY 05 ============ -->
+  <section id="page-p5" class="page">
+    <button class="back-link" onclick="show('watch', document.querySelectorAll('.tab')[2])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Homes to Watch
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill watch"><span class="pill-dot"></span>Homes to Watch</span>
+          <span class="prop-tag danger">Partial Zone A</span>
+          <span class="prop-tag warn">Street View First</span>
+        </div>
+        <h2>E Trapnell Road</h2>
+        <div class="prop-locale">Plant City, Florida · rural</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p5">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>House (if greenlit)<span class="carousel-slide-label">01 · House</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 18h14M3 21h18M7 18V8h4v10M13 18V11h4v7"/></svg>Visible Neighbors?<span class="carousel-slide-label">02 · Neighbors</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18M3 6h18M3 18h18"/></svg>Road Frontage<span class="carousel-slide-label">03 · Road</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="6" width="18" height="14"/></svg>Lot / Surroundings<span class="carousel-slide-label">04 · Lot</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Skip if isolated parcel<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score">22/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p5"></div>
+        <p class="photo-caption">Cheapest on the list — but rural caps the ceiling. Some Trapnell parcels sit alone in fields. Skip if that's the picture.</p>
+        <div class="photo-add-note"><strong>↑</strong> Only fill if visit is greenlit</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$126,000</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab</span><span class="price-val">~$35,000</span></div>
+          <div class="price-row"><span class="price-label">ARV (low–high)</span><span class="price-val">$190k – $230k</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$30–65k</span></div>
+          <p class="price-note">Lowest entry price, but the rural ceiling thins margins. Worth the drive only if Street View shows real neighbors.</p>
+        </div>
+
+        <div class="warning">
+          <h5>Street View Before You Drive</h5>
+          <p>Some Trapnell Rd parcels are isolated rural — house surrounded by fields, no comparables, no buyer pool. <b>Lone parcel in a field → skip. Neighborhood pocket → go.</b></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">2 / 1</div></div>
+            <div class="spec"><div class="spec-l">Location</div><div class="spec-v"><span class="warn small">Rural</span></div></div>
+            <div class="spec"><div class="spec-l">Flood</div><div class="spec-v"><span class="danger small">Partial A</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Run search → "<strong>Trapnell</strong>"</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/search/E+Trapnell+Rd+Plant+City+FL+33566" target="_blank" class="action primary">Maps First</a>
+          <a href="https://msc.fema.gov/portal/search" target="_blank" class="action danger">Flood Zone</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>If You Go — Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Neighboring homes visible from road?</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Mobile homes nearby (skip if yes)</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Low-lying land or standing water</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Condition visible from road</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PROPERTY 06 ============ -->
+  <section id="page-p6" class="page">
+    <button class="back-link" onclick="show('watch', document.querySelectorAll('.tab')[2])">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to Homes to Watch
+    </button>
+
+    <article class="prop">
+      <div class="prop-header">
+        <div class="prop-status-row">
+          <span class="status-pill watch"><span class="pill-dot"></span>Homes to Watch</span>
+          <span class="prop-tag warn">55+ Community</span>
+          <span class="prop-tag">Score 21/30</span>
+        </div>
+        <h2>Bel Air Avenue</h2>
+        <div class="prop-locale">Sun City Center, Florida</div>
+      </div>
+
+      <div class="photo-col">
+        <div class="carousel" data-carousel="p6">
+          <div class="carousel-track">
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Front Exterior<span class="carousel-slide-label">01 · Front</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="6" width="16" height="12"/><path d="M8 6V3M16 6V3"/></svg>HOA Signage (SCCA / Kings Point)<span class="carousel-slide-label">02 · HOA Sign</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12L12 4l10 8M5 10v10h14V10"/></svg>Roof Condition<span class="carousel-slide-label">03 · Roof</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="7" width="14" height="10" rx="1"/></svg>HVAC Unit<span class="carousel-slide-label">04 · HVAC</span></div>
+            <div class="carousel-slide empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg>Add interior shots<span class="carousel-slide-label">+ Add</span></div>
+          </div>
+          <div class="carousel-counter"><span class="cc-current">1</span>/<span class="cc-total">5</span></div>
+          <div class="carousel-score">21/30</div>
+          <button class="carousel-arrow prev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="carousel-arrow next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button>
+        </div>
+        <div class="carousel-dots" data-dots="p6"></div>
+        <p class="photo-caption">702 Bel Air sold $270k in Sept 2023 for a light cosmetic flip. Cash buyers very common — but only over 55.</p>
+        <div class="photo-add-note"><strong>↑</strong> HOA signage is the most important shot</div>
+      </div>
+
+      <div class="data-col">
+        <div class="panel">
+          <div class="panel-head"><h4>The Money</h4></div>
+          <div class="price-row"><span class="price-label">Ask</span><span class="price-val">$159,000</span></div>
+          <div class="price-row"><span class="price-label">Est. Rehab</span><span class="price-val">~$30,000</span></div>
+          <div class="price-row"><span class="price-label">ARV</span><span class="price-val">~$270,000</span></div>
+          <div class="price-row feature"><span class="price-label">Projected Spread</span><span class="price-val">$50–65k</span></div>
+          <p class="price-note">Smaller spread than top picks, but cash buyers in Sun City Center close fast and don't haggle. Quick exit story.</p>
+        </div>
+
+        <div class="warning">
+          <h5>55+ Restriction & HOA Trap</h5>
+          <p>You can buy and resell freely as an investor — but <b>your buyer must be 55+</b>. Smaller pool, cash-heavy. Bigger trap: <b>SCCA HOA is ~$30–50/year</b> (fine) versus <b>Kings Point at $500+/month</b> (avoid). Confirm community on site.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Specs</h4></div>
+          <div class="specs">
+            <div class="spec"><div class="spec-l">Beds / Baths</div><div class="spec-v">2 / 2</div></div>
+            <div class="spec"><div class="spec-l">Sqft</div><div class="spec-v">1,344</div></div>
+            <div class="spec"><div class="spec-l">Age Rule</div><div class="spec-v"><span class="warn small">55+</span></div></div>
+            <div class="spec"><div class="spec-l">Comp</div><div class="spec-v"><span class="ok small">$270k</span></div></div>
+            <div class="spec"><div class="spec-l">Cash Buyers</div><div class="spec-v"><span class="ok small">High</span></div></div>
+            <div class="spec"><div class="spec-l">HOA</div><div class="spec-v"><span class="warn small">SCCA/KP?</span></div></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Comparables</h4><span class="panel-sub">Bel Air · same street</span></div>
+          <table class="comps-table">
+            <thead><tr><th>Source</th><th style="text-align:right">Sold</th></tr></thead>
+            <tbody>
+              <tr><td>702 Bel Air · Sept 2023</td><td class="num">$270,000</td></tr>
+              <tr><td><b>ARV target</b></td><td class="range">~$270k</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>Lien Status</h4></div>
+          <div class="lien-status">
+            <div class="ls-btn unchecked active" onclick="setLien(this)">Not Checked</div>
+            <div class="ls-btn clean" onclick="setLien(this)">✓ Clean</div>
+            <div class="ls-btn issue" onclick="setLien(this)">⚠ Issue</div>
+          </div>
+          <a href="https://pubrec6.hillsclerk.com/ORIPublicAccess/customSearch.html" target="_blank" class="lien-search-link">Run search → "<strong>Bel Air</strong>" + Sun City Center</a>
+        </div>
+
+        <div class="actions">
+          <a href="https://www.google.com/maps/dir/?api=1&destination=Bel+Air+Ave+Sun+City+Center+FL+33573" target="_blank" class="action primary">Navigate</a>
+          <a href="https://www.google.com/maps/search/Bel+Air+Ave+Sun+City+Center+FL+33573" target="_blank" class="action secondary">Street View</a>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><h4>On-Site Checklist</h4></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Find house number with bank notice</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">SCCA or Kings Point signage (huge HOA difference)</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">Exterior: roof, paint, HVAC age</div></div>
+          <div class="check" onclick="toggleCheck(this)"><div class="check-box"></div><div class="check-txt">📷 Photograph</div></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ LIEN PROTOCOL ============ -->
   <section id="page-liens" class="page">
     <div class="list-intro">
       <div>
         <h2>Lien protocol</h2>
-        <p>Run every property below before any offer. Free public records, ten minutes per address — catches the things that kill deals at closing.</p>
+        <p>Run every property below before any offer. Free public records, ten minutes per address — catches the things that kill deals at closing. In Florida, every county clerk has an official records portal; same drill in most other states.</p>
       </div>
       <div class="list-intro-count">Pre-Offer</div>
     </div>
@@ -1536,19 +2621,14 @@
     </div>
 
     <div class="panel-head"><h4>Search Term per Property</h4></div>
-    <div class="liens-grid" id="liens-grid">
-      <div class="lien-card"><h5>21019 Sunpoint Way #201, Lutz</h5><p>Hillsborough County Official Records</p><span class="search-term">21019 Sunpoint Way</span></div>
-      <div class="lien-card"><h5>119 W 7th St, Lakeland</h5><p>Polk County Clerk of Courts</p><span class="search-term">119 W 7th St Lakeland</span></div>
-      <div class="lien-card"><h5>4625 Oak Hill Ter, Sarasota</h5><p>Sarasota County Official Records</p><span class="search-term">4625 Oak Hill Ter</span></div>
-      <div class="lien-card"><h5>250 Douglas Rd W, Oldsmar</h5><p>Pinellas County Clerk of Courts</p><span class="search-term">250 Douglas Rd W Oldsmar</span></div>
-      <div class="lien-card"><h5>13202 Laraway Ct, Riverview</h5><p>Hillsborough County Official Records</p><span class="search-term">13202 Laraway Ct</span></div>
-      <div class="lien-card"><h5>311 62nd St NW, Bradenton</h5><p>Manatee County Clerk of Courts</p><span class="search-term">311 62nd St NW Bradenton</span></div>
-      <div class="lien-card"><h5>6917 Bream St, Tampa</h5><p>Hillsborough County Official Records</p><span class="search-term">6917 Bream St Tampa</span></div>
-      <div class="lien-card"><h5>7814 Brisbane Ct, New Port Richey</h5><p>Pasco County Clerk of Courts</p><span class="search-term">7814 Brisbane Ct</span></div>
-      <div class="lien-card"><h5>2805 73rd St Ct W, Bradenton</h5><p>Manatee County · pull HOA docs too</p><span class="search-term">2805 73rd Street Ct W</span></div>
-      <div class="lien-card"><h5>2237 Firestone Pl, Winter Haven</h5><p>Polk County Clerk of Courts</p><span class="search-term">2237 Firestone Pl</span></div>
-      <div class="lien-card"><h5>965 Whitman Dr, Sarasota</h5><p>Sarasota County · pull HOA docs</p><span class="search-term">965 Whitman Dr Sarasota</span></div>
-      <div class="lien-card"><h5>913 E 28th Ave, Tampa</h5><p>Hillsborough County Official Records</p><span class="search-term">913 E 28th Ave Tampa</span></div>
+    <div class="liens-grid">
+      <div class="lien-card"><h5>119 W 7th St · Lakeland</h5><span class="search-term">"119 W 7th" + Lakeland</span></div>
+      <div class="lien-card"><h5>4625 Oak Hill Ter · Sarasota</h5><span class="search-term">"Oak Hill Ter" + Sarasota</span></div>
+      <div class="lien-card"><h5>250 Douglas Rd W · Oldsmar</h5><span class="search-term">"Douglas Rd" + Oldsmar</span></div>
+      <div class="lien-card"><h5>13202 Laraway Ct · Riverview</h5><span class="search-term">"Laraway" + Riverview</span></div>
+      <div class="lien-card"><h5>311 62nd St NW · Bradenton</h5><span class="search-term">"311 62nd" + Bradenton</span></div>
+      <div class="lien-card"><h5>6917 Bream St · Tampa</h5><span class="search-term">"Bream" + Tampa 33617</span></div>
+      <div class="lien-card"><h5>21019 Sunpoint Way · Lutz</h5><span class="search-term">"Sunpoint" + Lutz</span></div>
     </div>
 
     <div class="lien-howto">
@@ -1557,6 +2637,7 @@
       <div class="lien-step"><div class="lien-step-n">2</div><p>Check dates — read records from the <b>last ten years</b>. Older usually doesn't matter.</p></div>
       <div class="lien-step"><div class="lien-step-n">3</div><p>If you find a lien, look for a matching <b>Release of Lien or Satisfaction</b>. That means it was paid off.</p></div>
       <div class="lien-step"><div class="lien-step-n">4</div><p>Open lien with no release? <b>Stop. Call a title company before doing anything else.</b></p></div>
+
       <div class="lien-key">
         <div class="key-item key-clean"><div class="dot-color"></div><p><b>No open liens</b> — clean, proceed with confidence.</p></div>
         <div class="key-item key-yellow"><div class="dot-color"></div><p><b>Small HOA or code lien</b> — usually negotiable at closing.</p></div>
@@ -1567,27 +2648,12 @@
 
   <footer>
     <span>Property Pipeline · Field Sheet</span>
-    <span>Tap any address to open Google Maps · Print landscape</span>
+    <span>Print landscape · Save offline before driving</span>
   </footer>
 
 </div>
 
 <script>
-  /* ── Utility: build a Google Maps directions URL from an address string ── */
-  function mapsUrl(address) {
-    return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(address);
-  }
-
-  /* ── Utility: wrap an address string in a clickable Maps link ── */
-  function mapsLink(address, label) {
-    const url = mapsUrl(address);
-    return '<a class="maps-link" href="' + url + '" target="_blank" onclick="event.stopPropagation()">'
-      + (label || address)
-      + '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>'
-      + '</a>';
-  }
-
-  /* ── Page switching ── */
   function show(id, tabEl) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-' + id).classList.add('active');
@@ -1601,124 +2667,88 @@
   function toggleCheck(el) { el.classList.toggle('done'); }
 
   function setLien(btn) {
-    btn.parentElement.querySelectorAll('.ls-btn').forEach(b => b.classList.remove('active'));
+    const group = btn.parentElement;
+    group.querySelectorAll('.ls-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
   }
 
   function clearNotes(btn) {
-    btn.closest('.notes-pad').querySelectorAll('.notes-input').forEach(i => i.value = '');
+    const pad = btn.closest('.notes-pad');
+    pad.querySelectorAll('.notes-input').forEach(input => input.value = '');
   }
 
-  /* ── Yay / Nay verdicts ── */
-  const STORAGE_KEY = 'pp_verdicts';
+  /* ===== VERDICT SYSTEM ===== */
+  (function() {
+    const KEY = 'property-verdicts';
+    let store = {};
+    try { store = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e) {}
 
-  function getVerdicts() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-  }
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch(e) {} }
 
-  function saveVerdict(cardId, verdict) {
-    const v = getVerdicts();
-    if (verdict === null) { delete v[cardId]; } else { v[cardId] = verdict; }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
-  }
-
-  function cardId(card) {
-    const t = card.querySelector('.card-title');
-    const l = card.querySelector('.card-locale');
-    return ((t ? t.textContent : '') + '|' + (l ? l.textContent : '')).trim();
-  }
-
-  function applyVerdict(card, verdict) {
-    card.dataset.verdict = verdict || '';
-    const yay = card.querySelector('.verdict-btn.yay');
-    const nay = card.querySelector('.verdict-btn.nay');
-    if (yay) yay.classList.toggle('active', verdict === 'yay');
-    if (nay) nay.classList.toggle('active', verdict === 'nay');
-  }
-
-  function setVerdict(btn, verdict, card) {
-    const current = card.dataset.verdict;
-    const next = current === verdict ? null : verdict;
-    applyVerdict(card, next);
-    saveVerdict(cardId(card), next);
-    updatePassedBar(card.closest('.page'));
-  }
-
-  function updatePassedBar(section) {
-    if (!section) return;
-    const id = section.id.replace('page-', '');
-    const bar = document.getElementById('passed-bar-' + id);
-    const label = document.getElementById('passed-label-' + id);
-    if (!bar || !label) return;
-    const nays = section.querySelectorAll('.card[data-verdict="nay"]').length;
-    if (nays > 0) {
-      bar.classList.add('visible');
-      label.textContent = nays + ' passed' + (bar.dataset.showing === '1' ? ' (showing)' : ' (hidden)');
-      bar.querySelector('button').textContent = bar.dataset.showing === '1' ? 'Hide passed' : 'Show passed';
-    } else {
-      bar.classList.remove('visible');
-      bar.dataset.showing = '0';
+    function applyVerdict(card, v) {
+      if (v) { card.dataset.verdict = v; } else { delete card.dataset.verdict; }
+      card.querySelectorAll('.verdict-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.v === v);
+      });
     }
-  }
 
-  function togglePassed(id) {
-    const section = document.getElementById('page-' + id);
-    const bar = document.getElementById('passed-bar-' + id);
-    if (!section || !bar) return;
-    const showing = bar.dataset.showing === '1';
-    bar.dataset.showing = showing ? '0' : '1';
-    section.querySelectorAll('.card[data-verdict="nay"]').forEach(c => {
-      c.style.display = showing ? '' : 'flex';
-    });
-    updatePassedBar(section);
-  }
+    function refreshBar(tabId) {
+      const bar = document.getElementById('passed-bar-' + tabId);
+      if (!bar) return;
+      const section = document.getElementById('page-' + tabId);
+      const nay = section ? section.querySelectorAll('.card[data-verdict="nay"]').length : 0;
+      const lbl = document.getElementById('passed-label-' + tabId);
+      if (lbl) lbl.textContent = nay + ' propert' + (nay === 1 ? 'y' : 'ies') + ' passed';
+      bar.classList.toggle('visible', nay > 0);
+    }
 
-  function injectVerdictButtons() {
-    document.querySelectorAll('.card').forEach(card => {
-      if (card.querySelector('.card-verdict')) return;
-      const div = document.createElement('div');
-      div.className = 'card-verdict';
-      div.onclick = e => e.stopPropagation();
-      const yay = document.createElement('button');
-      yay.className = 'verdict-btn yay';
-      yay.textContent = '✓  Pursue';
-      yay.onclick = () => setVerdict(yay, 'yay', card);
-      const nay = document.createElement('button');
-      nay.className = 'verdict-btn nay';
-      nay.textContent = '✗  Pass';
-      nay.onclick = () => setVerdict(nay, 'nay', card);
-      div.appendChild(yay);
-      div.appendChild(nay);
-      const body = card.querySelector('.card-body');
-      if (body) body.appendChild(div);
-    });
-  }
+    const passedHidden = {};
 
-  function loadSavedVerdicts() {
-    const verdicts = getVerdicts();
-    document.querySelectorAll('.card').forEach(card => {
-      const id = cardId(card);
-      const verdict = verdicts[id];
-      if (verdict) {
-        applyVerdict(card, verdict);
-        if (verdict === 'nay') card.style.display = 'none';
-      }
-    });
-    document.querySelectorAll('.page').forEach(updatePassedBar);
-  }
+    window.setVerdict = function(btn, cardId, v) {
+      btn.closest('a') && btn.closest('a').removeAttribute('href');
+      const card = btn.closest('.card');
+      const current = card.dataset.verdict;
+      const next = current === v ? null : v;
+      if (next) { store[cardId] = next; } else { delete store[cardId]; }
+      save();
+      applyVerdict(card, next);
+      const section = card.closest('.page');
+      if (section) refreshBar(section.id.replace('page-', ''));
+    };
 
-  function updateTabCounts() {
-    const tabs = ['progress','soon','watch','flight'];
-    tabs.forEach(id => {
-      const el = document.getElementById('count-' + id);
-      const section = document.getElementById('page-' + id);
-      if (el && section) {
-        el.textContent = section.querySelectorAll('.card').length;
-      }
-    });
-  }
+    window.togglePassed = function(tabId) {
+      passedHidden[tabId] = !passedHidden[tabId];
+      const section = document.getElementById('page-' + tabId);
+      const bar = document.getElementById('passed-bar-' + tabId);
+      const btn = bar ? bar.querySelector('button') : null;
+      if (section) section.classList.toggle('hide-passed', passedHidden[tabId]);
+      if (btn) btn.textContent = passedHidden[tabId] ? 'Show passed' : 'Hide passed';
+    };
 
-  /* ── Carousels ── */
+    function initVerdicts() {
+      ['progress', 'soon', 'watch', 'flight'].forEach(function(tab) {
+        const section = document.getElementById('page-' + tab);
+        if (!section) return;
+        section.querySelectorAll('.card').forEach(function(card, i) {
+          const cardId = tab + '-' + i;
+          card.dataset.cardId = cardId;
+          const div = document.createElement('div');
+          div.className = 'card-verdict';
+          div.innerHTML =
+            '<button class="verdict-btn yay" data-v="yay" onclick="event.preventDefault();event.stopPropagation();setVerdict(this,\'' + cardId + '\',\'yay\')">Pursue</button>' +
+            '<button class="verdict-btn nay" data-v="nay" onclick="event.preventDefault();event.stopPropagation();setVerdict(this,\'' + cardId + '\',\'nay\')">Pass</button>';
+          const body = card.querySelector('.card-body');
+          if (body) body.appendChild(div);
+          if (store[cardId]) applyVerdict(card, store[cardId]);
+        });
+        refreshBar(tab);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initVerdicts);
+  })();
+
+  /* ===== CAROUSELS ===== */
   function initCarousels() {
     document.querySelectorAll('.carousel').forEach(carousel => {
       const id = carousel.dataset.carousel;
@@ -1729,9 +2759,10 @@
       const counter = carousel.querySelector('.cc-current');
       const total = carousel.querySelector('.cc-total');
       const dotsContainer = document.querySelector('[data-dots="' + id + '"]');
-      if (!track || !dotsContainer) return;
+
       const count = slides.length;
-      if (total) total.textContent = count;
+      total.textContent = count;
+
       dotsContainer.innerHTML = '';
       slides.forEach((_, i) => {
         const dot = document.createElement('button');
@@ -1740,48 +2771,46 @@
         dotsContainer.appendChild(dot);
       });
       const dots = dotsContainer.querySelectorAll('.carousel-dot');
+
       let current = 0;
       function update() {
-        if (counter) counter.textContent = current + 1;
+        counter.textContent = current + 1;
         dots.forEach((d, i) => d.classList.toggle('active', i === current));
-        if (prevBtn) prevBtn.disabled = current === 0;
-        if (nextBtn) nextBtn.disabled = current === count - 1;
+        prevBtn.disabled = current === 0;
+        nextBtn.disabled = current === count - 1;
       }
       function goTo(i) {
         current = Math.max(0, Math.min(count - 1, i));
         track.scrollTo({ left: track.clientWidth * current, behavior: 'smooth' });
         update();
       }
-      if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
-      if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+      prevBtn.addEventListener('click', () => goTo(current - 1));
+      nextBtn.addEventListener('click', () => goTo(current + 1));
+
       let scrollTimer;
       track.addEventListener('scroll', () => {
         clearTimeout(scrollTimer);
         scrollTimer = setTimeout(() => {
-          const ni = Math.round(track.scrollLeft / track.clientWidth);
-          if (ni !== current) { current = ni; update(); }
+          const newIndex = Math.round(track.scrollLeft / track.clientWidth);
+          if (newIndex !== current) { current = newIndex; update(); }
         }, 80);
       });
+
       update();
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
-      const ap = document.querySelector('.page.active');
-      if (!ap) return;
-      const c = ap.querySelector('.carousel');
-      if (!c) return;
-      const btn = c.querySelector(e.key === 'ArrowLeft' ? '.prev' : '.next');
+      const activePage = document.querySelector('.page.active');
+      if (!activePage) return;
+      const carousel = activePage.querySelector('.carousel');
+      if (!carousel) return;
+      const btn = carousel.querySelector(e.key === 'ArrowLeft' ? '.prev' : '.next');
       if (btn && !btn.disabled) btn.click();
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initCarousels();
-    injectVerdictButtons();
-    loadSavedVerdicts();
-    updateTabCounts();
-  });
+  document.addEventListener('DOMContentLoaded', initCarousels);
 </script>
 </body>
 </html>
